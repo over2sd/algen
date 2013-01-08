@@ -1,4 +1,6 @@
 # backup files
 *.*~
+# bytecode
+*.pyc
 # output file
 tmp.txt
