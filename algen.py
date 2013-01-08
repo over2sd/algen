@@ -72,10 +72,11 @@ def main(argv):
     while part4 in boring: part4 = randint(mn,mx) # c/y
     var = vlist[randint(0,len(vlist)-1)]
     print "%i) " % (i+1),
-    probtype = '0'
+    probtype = '1'
     o = ""
     if probtype == '0': o = showalgex.showaxpbeqc(part1,part2,var,part3)
-    if out is not "": lines.append(o)
+    elif probtype == '1': o = showalgex.showaxbeqcxd(part1,part2,var,part3,part4)
+  if out is not "": lines.append("\n%s" % o)
   if out is not "":
     with open(out,'a') as f:
       for l in lines:
@@ -114,7 +115,7 @@ def usage():
 #  print "		5: a(bx-c)=d"
 #  print "		6: x^3-y^3"
 #  print "		7: ax^2+bx-c=0"
-#  print "	Example: -t 138af"
+#  print "	Examples: \"-t 138af\" \"-t 2\""
   print "-0, --allowzero:		Allow value of x, a, b, c... to be boring (0, 1, or -1)"
 
 if __name__ == "__main__":
