@@ -138,5 +138,5 @@ def usage():
   print "-0, --allowzero:		Allow value of x, a, b, c... to be boring (0, 1, or -1)"
 
 if __name__ == "__main__":
-  print "Loading Algebra Exercise Generator v%s..." % (sys.argv[0],ver)
+  print "Loading Algebra Exercise Generator v%s..." % (ver)
   main(sys.argv[1:])
