@@ -8,7 +8,7 @@ from random import randint
 
 import showalgex
 
-ver = "0.6"
+ver = "0.7"
 
 def main(argv):
   cnt = 1
@@ -119,16 +119,17 @@ def isnum(x):
 
 def usage():
   print "Usage: %s [option value]" % sys.argv[0]
-  print "-c <#>, --count #:		How many problems to generate"
-  print "-n <#>, --min #:		Minimum value for variable, coefficients, and constants"
-  print "-x <#>, --max:		Maximum value for variable, coefficients, and constants"
-  print "-v <#>, --vars:		String of lowercase letters that can be used for variables (e.g., \"-v x\", \"-v abc\")"
-  print "-o <file>, --outfile:		A filename where the program will append its results for easy copy/paste"
-  print "-t <types>, --types:		Type(s) of problems to generate:"
+  print "-c <#>, --count <#>:		How many exercises to generate"
+  print "-n <#>, --min <#>:		Minimum value for variable, coefficients, and constants"
+  print "-x <#>, --max <#>:		Maximum value for variable, coefficients, and constants"
+  print "-v <char|string>, --vars <char|string>:		String of lowercase letters that can be used for variables"
+  print "	Examples: \"-v x\", \"-v abc\""
+  print "-o <file>, --outfile <file>:		A filename where the program will append its results for easy copy/paste"
+  print "-t <types>, --types <types>:		Type(s) of exercises to generate:"
   print "		0: ax+b=c"
   print "		1: ax+b=cx+d"
   print "		2: ax^2+bx-c (GCF)"
-  print "		3: area/perim of a triangle"
+  print "		3: area/perim of a right triangle"
 #  print "		4: area/perim of a quadrilateral"
   print "		5: a(bx-c)=d"
 #  print "		6: x^3-y^3"
@@ -137,5 +138,5 @@ def usage():
   print "-0, --allowzero:		Allow value of x, a, b, c... to be boring (0, 1, or -1)"
 
 if __name__ == "__main__":
-  print "Loading %s v%s..." % (sys.argv[0],ver)
+  print "Loading Algebra Exercise Generator v%s..." % (sys.argv[0],ver)
   main(sys.argv[1:])
