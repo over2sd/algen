@@ -1,6 +1,4 @@
-Add functions for different types of problems.
 Add problem format ax^2 + bx - c
-Add geometry problem find area/perim given two values of a triangle
 Add geometry problem find area/perim given two values of a quadrilateral 
 Add problem format a(bx-c)=d
 Add options for determining distribution of each problem type?
