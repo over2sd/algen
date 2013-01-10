@@ -1,11 +1,38 @@
 # Show algebra problems functions
 import re
-from math import sqrt
+from math import (sqrt, fabs)
 
-def areafromsides(a,b,c):
-  m = (a+b+c)/2
-  area = (2 * sqrt(m*(m-a)*(m-b)*(m-c)))/a
-  return area
+def trianglesanity(a,b,c):
+  # No side may be 0
+  if a == 0: a += 1
+  if b == 0: b += 1
+  if c == 0: c += 1
+  # All sides must be positive
+  a = fabs(a)
+  b = fabs(b)
+  c = fabs(c)
+  # no side may be >= sum of the other two sides
+  check = 0
+  while check == 0:
+    if a-c >= b: b += 1
+    if b-c >= a: a += 2
+    if c-b >= a: a += 1
+    if c-a >= b: b += 2
+    if a-b >= c: c += 1
+    if b-a >= c: c += 2
+    if (a < b+c and b < a+c and c < a+b): check = 1
+  return (int(a),int(b),int(c))
+
+def areafromsides(a,b,c): # assumes correct triangle dimensions, which must be true, because this function returns only the area.
+  m = (a+b+c)/2.00 # magic number
+  try:
+    area = sqrt(m*(m-a)*(m-b)*(m-c))
+    if area == 0:
+      print "ARGH! %f %f %f => %f => %f" % (a,b,c,m,area)
+    return area
+  except ValueError as e:
+    print "Oops: %s given a=%i, b=%i, c=%i (probably means this is not a triangle!)" % (e,a,b,c)
+    return 0
 
 def cleaneq(s):
   s = re.sub('\+-','-',s)
@@ -24,7 +51,7 @@ def showaxbeqcxd(v,a,x,b,c):
     d = b
     b = a
     a = d
-    print "\nflipped a and b"
+#    print "\nflipped a and b"
   one = (v*a)+b
   d = one - (v*c)
   o = ""
@@ -48,24 +75,45 @@ def showgcfax2pbxmc(v,x,d,e,f,g):
   o = ") %i%c^2+%i%c-%i (%i%c+%i)(%i%c-%i) (f(%i)=%i)" % (a,x,b,x,c,d,x,e,f,x,g,v,t)
   return cleaneq(o)
 
-#  print "		3: area/perim of a triangle"
-def showtriangle(m,n):
-  if (n>m): # Shouldn't happen, but let's fix it automagically.
-    z = m
-    m = n
-    n = z
-  if (n==m): m += 1 # prevents a=0
-  a = (m*m)-(n*n)
-  b = 2*m*n
-  c = (m*m)+(n*n)
-  area = 0.5*(a*b)
-  p = a+b+c
-  h = ((a*a)+(b*b))/c
-#  print "Given %i and %i: a=%i b=%i c=%i=%i" % (m,n,a,b,c,h)
-  o = ") A right triangle has legs x cm and %icm and a hypotenuse of %icm. Find the area and perimeter. (x=%icm, a=%icm^2, p=%icm)" % (b,c,a,area,p)
+#  print "		3/8: area/perim of a triangle"
+def showtriangle(u,m,n,b=0):
+  a = 1
+  c = 1
+  o = ") "
+  if b == 0: # if o != 0, generate triangle that is not right
+    if m == 0: m += 1
+    if n == 0: n += 1
+    if (n>m): # Shouldn't happen, but let's fix it automagically.
+      z = m
+      m = n
+      n = z
+    if (n==m): m += 1 # prevents a=0
+    a = (m*m)-(n*n)
+    b = 2*m*n
+    c = (m*m)+(n*n)
+    area = 0.5*(a*b)
+    p = a+b+c
+    h = ((a*a)+(b*b))/c
+    #  print "Given %i and %i: a=%i b=%i c=%i=%i" % (m,n,a,b,c,h)
+    o += "A right triangle has legs x %s and %i%s and a hypotenuse of %i%s. Find the area and perimeter. (x=%i%s, a=%.4f%s^2, p=%.4f%s)" % (u,b,u,c,u,a,u,area,u,p,u)
+  else:
+    (m,b,n) = trianglesanity(m,b,n)
+    area = areafromsides(b,m,n)
+    a = m
+    c = n
+    h = 2*area/b
+    p = a+b+c
+    o += "A triangle has sides of %i%s, %i%s, and %i%s. The height of the triangle, measured with the second side (%i%s) as the base, is %.6f%s. Find the perimeter and area. (p=%.3f%s, a=%.3f%s^2)" % (a,u,b,u,c,u,b,u,h,u,p,u,area,u)
   return cleaneq(o)
 
-#  print "		4: area/perim of a quadrilateral"
+#  print "		4: area/perim of a parallelogram"
+def showpara(b,s,d,u): # base, side, diagonal, unit string
+  (b,s,d) = trianglesanity(b,s,d)
+  area = 2*(areafromsides(b,s,d))
+  h = area/b
+  p = 2*b+2*s
+  o = ") A parallelogram has a height of %.6f%s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter. (A=%.3f%s^2, P=%i%s)" % (h,u,b,u,s,u,area,u,p,u)
+  return o
 
 #  print "		5: a(bx-c)=d"
 def showabxmc(v,a,b,x,c):
@@ -80,3 +128,16 @@ def showx3my3(v,x,a):
   pass
 
 #  print "		7: ax^2+bx-c=0"
+
+def unittest(a = 0, b = 0, c = 0):
+  if a == 0 and a == b and a == c:
+    for a in range(1,10):
+      for b in range(1,10):
+        for c in range(1,10):
+          (d,e,f) = trianglesanity(a,b,c)
+          print "Triangle: %i %i %i from given %i %i %i for change of %i %i %i" % (d,e,f,a,b,c,d-a,e-b,f-c)
+  else:
+    print "%i %i %i " % (a,b,c),
+    (d,e,f) = trianglesanity(a,b,c)
+    print "Triangle: %i %i %i from Given %i %i %i for change of %i %i %i" % (d,e,f,a,b,c,d-a,e-b,f-c)
+  return

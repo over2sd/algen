@@ -4,12 +4,14 @@
 import sys
 import getopt
 from random import randint
+from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.8"
+ver = "0.9.00"
 
 def main(argv):
+  debugutest = 0
   cnt = 1
   mn = 1
   mx = 10
@@ -18,9 +20,12 @@ def main(argv):
   out = ""
   lines = []
   boring = [-1,0,1]
-  tlist = "01235"
+  tlist = "0123458"
+  units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
+  u = 0
+  unit = "spans"
   try:
-    opts, args = getopt.getopt(argv, "c:dhn:o:v:x:0t:", ["double-sided","count=","min=","max=","vars=","outfile=","help","allowzero","types="])
+    opts, args = getopt.getopt(argv, "c:dhn:o:v:x:0t:u:", ["double-sided","count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test"])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -43,6 +48,10 @@ def main(argv):
     elif opt in ("-t","--types"):
       # need sanity check?
       tlist = arg
+    elif opt in ("-u","--unit"):
+      # need sanity check?
+      unit = arg
+      u = -1
     elif opt in ("-n","--min"):
       if isnum(arg):
         mn = int(arg)
@@ -56,6 +65,8 @@ def main(argv):
         print "Argument is not valid. Ignoring %s %s and using \"%s\" for possible variables.\n" % (opt,arg,vlist)
     elif opt in ("-0","--allowzero"):
       boring = []
+    elif opt == "--test":
+      debugutest = 1
     elif opt in ("-o","--outfile"):
       out = arg
       try:
@@ -63,6 +74,13 @@ def main(argv):
         o.close()
       except IOError as e:
         print "Could not open %s for output: %s. Skipping." % (out,e)
+  if debugutest == 1:
+    for i in range(cnt):
+      a = randint(mn,mx)
+      b = randint(mn,mx)
+      c = randint(mn,mx)
+      showalgex.unittest(a,b,c)
+    sys.exit(0)
   if mx <= 1 and mn >=-1: boring = [] # only you can prevent infinite loops
   exlist = []
   while len(exlist) < cnt: # until we have at least as many listed types as we want exercises...
@@ -86,11 +104,26 @@ def main(argv):
     if probtype == '0': o = showalgex.showaxpbeqc(part1,part2,var,part3)
     elif probtype == '1': o = showalgex.showaxbeqcxd(part1,part2,var,part3,part4)
     elif probtype == '2': o = showalgex.showgcfax2pbxmc(part1,var,part2,part3,part4,part5)
-    elif probtype == '3':
-      if part1 < 1: part1 *= -1 # must be positive
-      if part2 < 1: part2 *= -1 # must be positive
+    elif probtype in '38':
+      if u >= 0:
+        u = fabs(randint(mn,mx))
+        u = u % len(units)
+        unit = units[int(u)]
+      if part1 < 1: fabs(part1) # must be positive
+      if part2 < 1: fabs(part2) # must be positive
       if part1 == part2: part1 += 1 # must not be equal
-      o = showalgex.showtriangle(part1,part2)
+      if probtype == '3':
+        part3 = 0
+      else:
+        part3 = fabs(part3)
+      o = showalgex.showtriangle(unit,part1,part2,part3)
+
+    elif probtype == '4':
+        if u >= 0:
+          u = fabs(randint(mn,mx))
+          u = u % len(units)
+          unit = units[int(u)]
+        o = showalgex.showpara(part1,part2,part3,unit)
     elif probtype == '5': o = showalgex.showabxmc(part1,part2,part3,var,part4)
     print "%i%s" % (i,o)
     if out is not "": lines.append("\n%s" % o)
@@ -129,10 +162,11 @@ def usage():
   print "		1: ax+b=cx+d"
   print "		2: ax^2+bx-c (=d or GCF)"
   print "		3: area/perim of a right triangle"
-#  print "		4: area/perim of a quadrilateral"
+  print "		4: area/perim of a parallelogram"
   print "		5: a(bx-c)=d"
 #  print "		6: x^3-y^3"
 #  print "		7: ax^2+bx-c=0"
+  print "		8: area/perim of a triangle"
   print "	Examples: \"-t 138af\" \"-t 2\""
   print "-0, --allowzero:		Allow value of x, a, b, c... to be boring (0, 1, or -1)"
 
