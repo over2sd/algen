@@ -1,6 +1,7 @@
-Add problem format ax^2 + bx - c
-Add geometry problem find area/perim given two values of a quadrilateral 
-Add problem format a(bx-c)=d
+Add geometry problem find area/perim given two values of a quadrilateral
 Add options for determining distribution of each problem type?
 Add problem format x^3-y^3
-Add function to unify problem printing (and replace +- with - and -- with +)
+Add function to generate each type of problem as a word problem instead of an equation
+Add function for generating triangle exercises for non-right triangles
+Add check for negative values passed to geometry exercises
+

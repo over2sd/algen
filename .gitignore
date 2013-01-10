@@ -1,5 +1,7 @@
 # backup files
 *.*~
+TODO~
+
 # bytecode
 *.pyc
 # output file

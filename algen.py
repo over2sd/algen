@@ -3,12 +3,11 @@
 
 import sys
 import getopt
-import re
 from random import randint
 
 import showalgex
 
-ver = "0.7"
+ver = "0.8"
 
 def main(argv):
   cnt = 1
@@ -128,7 +127,7 @@ def usage():
   print "-t <types>, --types <types>:		Type(s) of exercises to generate:"
   print "		0: ax+b=c"
   print "		1: ax+b=cx+d"
-  print "		2: ax^2+bx-c (GCF)"
+  print "		2: ax^2+bx-c (=d or GCF)"
   print "		3: area/perim of a right triangle"
 #  print "		4: area/perim of a quadrilateral"
   print "		5: a(bx-c)=d"

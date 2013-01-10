@@ -1,25 +1,40 @@
 # Show algebra problems functions
+import re
+from math import sqrt
+
+def areafromsides(a,b,c):
+  m = (a+b+c)/2
+  area = (2 * sqrt(m*(m-a)*(m-b)*(m-c)))/a
+  return area
+
+def cleaneq(s):
+  s = re.sub('\+-','-',s)
+  s = re.sub('--','+',s)
+  return s
 
 #  print "		0: ax+b=c"
 def showaxpbeqc(v,a,x,b):
   c = (v*a)+b
   o = ") %i%c+%i=%i (%c=%i)" % (a,x,b,c,x,v)
-  return o
+  return cleaneq(o)
 
 #  print "		1: ax+b=cx+d"
 def showaxbeqcxd(v,a,x,b,c):
+  if c == a: # prevent equation tautology (6x-3=6x-3)
+    d = b
+    b = a
+    a = d
+    print "\nflipped a and b"
   one = (v*a)+b
   d = one - (v*c)
   o = ""
-  if c < 0: #TODO: Clean this up so -- becomes +, etc.
-    o = ") %i%c+%i=%i%i%c (%c=%i)" % (a,x,b,d,c,x,x,v)
-  elif d < 0:
-    o = ") %i%c+%i=%i%c%i (%c=%i)" % (a,x,b,c,x,d,x,v)
+  if c < 0: # reverse order of second half if variable part is negative
+    o = ") %i%c+%i=%i+%i%c (%c=%i)" % (a,x,b,d,c,x,x,v)
   else:
     o = ") %i%c+%i=%i%c+%i (%c=%i)" % (a,x,b,c,x,d,x,v)
-  return o
+  return cleaneq(o)
 
-#  print "		2: ax^2+bx-c (GCF)"
+#  print "		2: y=ax^2+bx-c (or GCF)"
 def showgcfax2pbxmc(v,x,d,e,f,g):
   # for (dx+e)(fx+g)
   h = d*f
@@ -31,7 +46,7 @@ def showgcfax2pbxmc(v,x,d,e,f,g):
   c = k
   t = (a*(v*v))+(b*v)-c
   o = ") %i%c^2+%i%c-%i (%i%c+%i)(%i%c-%i) (f(%i)=%i)" % (a,x,b,x,c,d,x,e,f,x,g,v,t)
-  return o
+  return cleaneq(o)
 
 #  print "		3: area/perim of a triangle"
 def showtriangle(m,n):
@@ -48,7 +63,7 @@ def showtriangle(m,n):
   h = ((a*a)+(b*b))/c
 #  print "Given %i and %i: a=%i b=%i c=%i=%i" % (m,n,a,b,c,h)
   o = ") A right triangle has legs x cm and %icm and a hypotenuse of %icm. Find the area and perimeter. (x=%icm, a=%icm^2, p=%icm)" % (b,c,a,area,p)
-  return o
+  return cleaneq(o)
 
 #  print "		4: area/perim of a quadrilateral"
 
@@ -58,7 +73,7 @@ def showabxmc(v,a,b,x,c):
   f = a*c
   d = e-f
   o = ") %i(%i%c-%i)=%i (%c=%i)" % (a,b,x,c,d,x,v)
-  return o
+  return cleaneq(o)
 
 #  print "		6: x^3-y^3"
 def showx3my3(v,x,a):
