@@ -125,9 +125,13 @@ def showabxmc(v,a,b,x,c):
 
 #  print "		6: x^3-y^3"
 def showx3my3(v,x,a):
-  pass
-
-#  print "		7: ax^2+bx-c=0"
+  if a <= 0:
+    a = int(fabs(a)+1)
+  y3 = a*a*a
+  b = a*a
+  c = (v*v*v) - y3
+  o = ") %c^3-%i (%c-%i)(%c^2+%i%c+%i) (f(%i)=%i)" % (x,y3,x,a,x,a,x,b,v,c)
+  return cleaneq(o)
 
 def unittest(a = 0, b = 0, c = 0):
   if a == 0 and a == b and a == c:

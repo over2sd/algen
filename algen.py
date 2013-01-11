@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.00"
+ver = "0.9.01"
 
 def main(argv):
   debugutest = 0
@@ -20,7 +20,7 @@ def main(argv):
   out = ""
   lines = []
   boring = [-1,0,1]
-  tlist = "0123458"
+  tlist = "01234567"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
   unit = "spans"
@@ -104,7 +104,7 @@ def main(argv):
     if probtype == '0': o = showalgex.showaxpbeqc(part1,part2,var,part3)
     elif probtype == '1': o = showalgex.showaxbeqcxd(part1,part2,var,part3,part4)
     elif probtype == '2': o = showalgex.showgcfax2pbxmc(part1,var,part2,part3,part4,part5)
-    elif probtype in '38':
+    elif probtype in '37':
       if u >= 0:
         u = fabs(randint(mn,mx))
         u = u % len(units)
@@ -125,6 +125,7 @@ def main(argv):
           unit = units[int(u)]
         o = showalgex.showpara(part1,part2,part3,unit)
     elif probtype == '5': o = showalgex.showabxmc(part1,part2,part3,var,part4)
+    elif probtype == '6': o = showalgex.showx3my3(part1,var,part2)
     print "%i%s" % (i,o)
     if out is not "": lines.append("\n%s" % o)
   if out is not "":
@@ -152,11 +153,11 @@ def isnum(x):
 def usage():
   print "Usage: %s [option value]" % sys.argv[0]
   print "-c <#>, --count <#>:		How many exercises to generate"
-  print "-n <#>, --min <#>:		Minimum value for variable, coefficients, and constants"
-  print "-x <#>, --max <#>:		Maximum value for variable, coefficients, and constants"
-  print "-v <char|string>, --vars <char|string>:		String of lowercase letters that can be used for variables"
+  print "-n <#>, --min <#>:		Minimum value for variable, coefficients,\n\tand constants"
+  print "-x <#>, --max <#>:		Maximum value for variable, coefficients,\n\tand constants"
+  print "-v <char|string>, --vars <char|string>:		String of lowercase letters\n\tthat can be used for variables"
   print "	Examples: \"-v x\", \"-v abc\""
-  print "-o <file>, --outfile <file>:		A filename where the program will append its results for easy copy/paste"
+  print "-o <file>, --outfile <file>:		A filename where the program will\n\tappend its results for easy copy/paste"
   print "-t <types>, --types <types>:		Type(s) of exercises to generate:"
   print "		0: ax+b=c"
   print "		1: ax+b=cx+d"
@@ -164,12 +165,14 @@ def usage():
   print "		3: area/perim of a right triangle"
   print "		4: area/perim of a parallelogram"
   print "		5: a(bx-c)=d"
-#  print "		6: x^3-y^3"
-#  print "		7: ax^2+bx-c=0"
-  print "		8: area/perim of a triangle"
+  print "		6: x^3-y^3"
+  print "		7: area/perim of a triangle"
   print "	Examples: \"-t 138af\" \"-t 2\""
-  print "-0, --allowzero:		Allow value of x, a, b, c... to be boring (0, 1, or -1)"
+  print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
+  unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]
+  unit = unit[randint(0,len(unit)-1)]
+  print "-u <string>, --unit <string>		Text to put after measurements\n\t(e.g., %s)" % unit
 
 if __name__ == "__main__":
-  print "Loading Algebra Exercise Generator v%s..." % (ver)
+  print "\nLoading Algebra Exercise Generator v%s..." % (ver)
   main(sys.argv[1:])
