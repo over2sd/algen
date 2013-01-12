@@ -2,3 +2,6 @@ Add options for determining distribution of each problem type?
 Add function to generate each type of problem as a word problem instead of an equation
 Add check for negative values passed to geometry exercises
 Rearrange type flags so similar level exercises are near each other (and specific types come after similar generic types)
+Generate PNG images for geometric exercises
+Generate fraction exercises
+Generate graphing exercises

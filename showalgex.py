@@ -1,6 +1,6 @@
 # Show algebra problems functions
 import re
-from math import (sqrt, fabs)
+from math import (sqrt, fabs, randint)
 
 def trianglesanity(a,b,c):
   # No side may be 0
@@ -133,7 +133,21 @@ def showx3my3(v,x,a):
   o = ") %c^3-%i (%c-%i)(%c^2+%i%c+%i) (f(%i)=%i)" % (x,y3,x,a,x,a,x,b,v,c)
   return cleaneq(o)
 
+def saywordprob(t,x,v,a,b,c='',d='',e=''):
+  o = ""
+  #if t == '0':
+  names = ["Hannah","Emily","Sarah","Madison","Brianna","Kaylee","Kaitlyn","Hailey","Alexis",
+    "Elizabeth","Michael","Jacob","Matthew","Nicholas","Christopher","Joseph","Zachary",
+    "Joshua","Andrew","William"]
+  txt1 = ["has enough money for %i %s with","will have enough money to have a party after saving allowance money for %i weeks, along with"]
+  txt2 = ["ponies","super flyers","monkeys","concert tickets"]
+  txt3 = ["left over.","already saved."]
+  txt4 = ["What is the cost for one?","How much is the weekly allowance?"]
+  return o
+
 def unittest(a = 0, b = 0, c = 0):
+  saywordprob(0,1,2,3,4,5)
+  '''
   if a == 0 and a == b and a == c:
     for a in range(1,10):
       for b in range(1,10):
@@ -144,4 +158,6 @@ def unittest(a = 0, b = 0, c = 0):
     print "%i %i %i " % (a,b,c),
     (d,e,f) = trianglesanity(a,b,c)
     print "Triangle: %i %i %i from Given %i %i %i for change of %i %i %i" % (d,e,f,a,b,c,d-a,e-b,f-c)
+  '''
   return
+
