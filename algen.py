@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.01"
+ver = "0.9.02"
 
 def main(argv):
   debugutest = 0

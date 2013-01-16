@@ -1,6 +1,7 @@
 # Show algebra problems functions
 import re
-from math import (sqrt, fabs, randint)
+from math import (sqrt, fabs)
+from random import randint
 
 def trianglesanity(a,b,c):
   # No side may be 0
@@ -81,8 +82,7 @@ def showtriangle(u,m,n,b=0):
   c = 1
   o = ") "
   if b == 0: # if o != 0, generate triangle that is not right
-    if m == 0: m += 1
-    if n == 0: n += 1
+    (m,b,n) = trianglesanity(m,b,n)
     if (n>m): # Shouldn't happen, but let's fix it automagically.
       z = m
       m = n
