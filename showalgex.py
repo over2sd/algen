@@ -133,6 +133,20 @@ def showx3my3(v,x,a):
   o = ") %c^3-%i (%c-%i)(%c^2+%i%c+%i) (f(%i)=%i)" % (x,y3,x,a,x,a,x,b,v,c)
   return cleaneq(o)
 
+def showsimpineq(v,a,x,b):
+  i = '='
+  if (a == 0): a += 1
+  c = (v*a)+b
+  d = randint(0,3)
+  ilist = ["<","<=",">",">="]
+  i = ilist[d]
+  e = 0
+  if (a < 0):
+    e = 2
+  i2 = ilist[(d+e) % 4]
+  o = ") %i%c+%i%s%i (%c%s%i)" % (a,x,b,i2,c,x,i,v)
+  return cleaneq(o)
+
 def saywordprob(t,x,v,a,b,c='',d='',e=''):
   o = ""
   #if t == '0':
@@ -146,7 +160,7 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   return o
 
 def unittest(a = 0, b = 0, c = 0):
-  saywordprob(0,1,2,3,4,5)
+  print showsimpineq(a,b,'x',c)
   '''
   if a == 0 and a == b and a == c:
     for a in range(1,10):

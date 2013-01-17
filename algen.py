@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.02"
+ver = "0.9.03"
 
 def main(argv):
   debugutest = 0
@@ -20,7 +20,7 @@ def main(argv):
   out = ""
   lines = []
   boring = [-1,0,1]
-  tlist = "01234567"
+  tlist = "012345678"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
   unit = "spans"
@@ -126,6 +126,7 @@ def main(argv):
         o = showalgex.showpara(part1,part2,part3,unit)
     elif probtype == '5': o = showalgex.showabxmc(part1,part2,part3,var,part4)
     elif probtype == '6': o = showalgex.showx3my3(part1,var,part2)
+    elif probtype == '8': o = showalgex.showsimpineq(part1,part2,var,part3)
     print "%i%s" % (i,o)
     if out is not "": lines.append("\n%s" % o)
   if out is not "":
@@ -167,6 +168,7 @@ def usage():
   print "		5: a(bx-c)=d"
   print "		6: x^3-y^3"
   print "		7: area/perim of a triangle"
+  print "		8: simple inequality (e.g. ax+b>c"
   print "	Examples: \"-t 138af\" \"-t 2\""
   print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
   unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]
