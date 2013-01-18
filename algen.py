@@ -168,7 +168,7 @@ def usage():
   print "		5: a(bx-c)=d"
   print "		6: x^3-y^3"
   print "		7: area/perim of a triangle"
-  print "		8: simple inequality (e.g. ax+b>c"
+  print "		8: simple inequality (e.g. ax+b>c)"
   print "	Examples: \"-t 138af\" \"-t 2\""
   print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
   unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]

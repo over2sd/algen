@@ -153,7 +153,7 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   names = ["Hannah","Emily","Sarah","Madison","Brianna","Kaylee","Kaitlyn","Hailey","Alexis",
     "Elizabeth","Michael","Jacob","Matthew","Nicholas","Christopher","Joseph","Zachary",
     "Joshua","Andrew","William"]
-  txt1 = ["has enough money for %i %s with","will have enough money to have a party after saving allowance money for %i weeks, along with"]
+  txt1 = ["has enough money for %i %s with","will have enough money to have a party after saving allowance money for %i weeks, along with","wrote %i more lines of video game code than"]
   txt2 = ["ponies","super flyers","monkeys","concert tickets"]
   txt3 = ["left over.","already saved."]
   txt4 = ["What is the cost for one?","How much is the weekly allowance?"]
