@@ -8,31 +8,30 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.03"
+ver = "0.9.04"
 
 def main(argv):
   debugutest = 0
   cnt = 1
   mn = 1
   mx = 10
-  vlist = "abcdefghikmnopqrstuvwxyz"
-  twoside = False
+  vlist = "abcdefghikmnpqrstuvwxyz"
   out = ""
   lines = []
   boring = [-1,0,1]
+  gcfone = 0
   tlist = "012345678"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
   unit = "spans"
   try:
-    opts, args = getopt.getopt(argv, "c:dhn:o:v:x:0t:u:", ["double-sided","count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test"])
+    opts, args = getopt.getopt(argv, "c:hn:o:v:x:01t:u:", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone"])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
     sys.exit(2)
   for opt, arg in opts:
-    if opt in ("-d","--double-sided"): twoside = True
-    elif opt in ("-h","--help"):
+    if opt in ("-h","--help"):
       usage()
       sys.exit(0)
     elif opt in ("-c","--count"):
@@ -65,13 +64,15 @@ def main(argv):
         print "Argument is not valid. Ignoring %s %s and using \"%s\" for possible variables.\n" % (opt,arg,vlist)
     elif opt in ("-0","--allowzero"):
       boring = []
+    elif opt in ("-1","--allowone"):
+      gcfone = 1
     elif opt == "--test":
       debugutest = 1
     elif opt in ("-o","--outfile"):
       out = arg
       try:
-        o = open(out,'a')
-        o.close()
+        f = open(out,'a')
+        f.close()
       except IOError as e:
         print "Could not open %s for output: %s. Skipping." % (out,e)
   if debugutest == 1:
@@ -127,7 +128,8 @@ def main(argv):
     elif probtype == '5': o = showalgex.showabxmc(part1,part2,part3,var,part4)
     elif probtype == '6': o = showalgex.showx3my3(part1,var,part2)
     elif probtype == '8': o = showalgex.showsimpineq(part1,part2,var,part3)
-    print "%i%s" % (i,o)
+    elif probtype == '9': o = showalgex.showfracgcf(part1,part2,gcfone)
+    print "%i) %s" % (i,o)
     if out is not "": lines.append("\n%s" % o)
   if out is not "":
     with open(out,'a') as f:
@@ -169,6 +171,7 @@ def usage():
   print "		6: x^3-y^3"
   print "		7: area/perim of a triangle"
   print "		8: simple inequality (e.g. ax+b>c)"
+  print "		9: Reducing/GCF of fractions"
   print "	Examples: \"-t 138af\" \"-t 2\""
   print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
   unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]

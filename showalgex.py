@@ -43,7 +43,7 @@ def cleaneq(s):
 #  print "		0: ax+b=c"
 def showaxpbeqc(v,a,x,b):
   c = (v*a)+b
-  o = ") %i%c+%i=%i (%c=%i)" % (a,x,b,c,x,v)
+  o = "%i%c+%i=%i (%c=%i)" % (a,x,b,c,x,v)
   return cleaneq(o)
 
 #  print "		1: ax+b=cx+d"
@@ -57,9 +57,9 @@ def showaxbeqcxd(v,a,x,b,c):
   d = one - (v*c)
   o = ""
   if c < 0: # reverse order of second half if variable part is negative
-    o = ") %i%c+%i=%i+%i%c (%c=%i)" % (a,x,b,d,c,x,x,v)
+    o = "%i%c+%i=%i+%i%c (%c=%i)" % (a,x,b,d,c,x,x,v)
   else:
-    o = ") %i%c+%i=%i%c+%i (%c=%i)" % (a,x,b,c,x,d,x,v)
+    o = "%i%c+%i=%i%c+%i (%c=%i)" % (a,x,b,c,x,d,x,v)
   return cleaneq(o)
 
 #  print "		2: y=ax^2+bx-c (or GCF)"
@@ -73,14 +73,14 @@ def showgcfax2pbxmc(v,x,d,e,f,g):
   b = i+j
   c = k
   t = (a*(v*v))+(b*v)-c
-  o = ") %i%c^2+%i%c-%i (%i%c+%i)(%i%c-%i) (f(%i)=%i)" % (a,x,b,x,c,d,x,e,f,x,g,v,t)
+  o = "%i%c^2+%i%c-%i (%i%c+%i)(%i%c-%i) (f(%i)=%i)" % (a,x,b,x,c,d,x,e,f,x,g,v,t)
   return cleaneq(o)
 
 #  print "		3/8: area/perim of a triangle"
 def showtriangle(u,m,n,b=0):
   a = 1
   c = 1
-  o = ") "
+  o = ""
   if b == 0: # if o != 0, generate triangle that is not right
     (m,b,n) = trianglesanity(m,b,n)
     if (n>m): # Shouldn't happen, but let's fix it automagically.
@@ -112,7 +112,7 @@ def showpara(b,s,d,u): # base, side, diagonal, unit string
   area = 2*(areafromsides(b,s,d))
   h = area/b
   p = 2*b+2*s
-  o = ") A parallelogram has a height of %.6f%s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter. (A=%.3f%s^2, P=%i%s)" % (h,u,b,u,s,u,area,u,p,u)
+  o = "A parallelogram has a height of %.6f%s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter. (A=%.3f%s^2, P=%i%s)" % (h,u,b,u,s,u,area,u,p,u)
   return o
 
 #  print "		5: a(bx-c)=d"
@@ -120,7 +120,7 @@ def showabxmc(v,a,b,x,c):
   e = a*(b*v)
   f = a*c
   d = e-f
-  o = ") %i(%i%c-%i)=%i (%c=%i)" % (a,b,x,c,d,x,v)
+  o = "%i(%i%c-%i)=%i (%c=%i)" % (a,b,x,c,d,x,v)
   return cleaneq(o)
 
 #  print "		6: x^3-y^3"
@@ -130,7 +130,7 @@ def showx3my3(v,x,a):
   y3 = a*a*a
   b = a*a
   c = (v*v*v) - y3
-  o = ") %c^3-%i (%c-%i)(%c^2+%i%c+%i) (f(%i)=%i)" % (x,y3,x,a,x,a,x,b,v,c)
+  o = "%c^3-%i (%c-%i)(%c^2+%i%c+%i) (f(%i)=%i)" % (x,y3,x,a,x,a,x,b,v,c)
   return cleaneq(o)
 
 def showsimpineq(v,a,x,b):
@@ -144,8 +144,59 @@ def showsimpineq(v,a,x,b):
   if (a < 0):
     e = 2
   i2 = ilist[(d+e) % 4]
-  o = ") %i%c+%i%s%i (%c%s%i)" % (a,x,b,i2,c,x,i,v)
+  o = "%i%c+%i%s%i (%c%s%i)" % (a,x,b,i2,c,x,i,v)
   return cleaneq(o)
+
+def showfracgcf(a, b,allow1):
+  spin = 0
+#  x = "%i,%i" % (a,b)
+#  print x,
+  if a < 0: a *= -1
+  if b < 0: b *= -1
+  if a == 0:
+    a = 6
+  else:
+    a += 5
+  if b == 0: b = a
+  if a == 1: a = 2
+  if b == 1: b = 2 # 1 produces unreducible fractions
+  b,a = sorted([a,b]) # a should be larger than b
+  sub = (a + b) / 2
+  if sub in [a,b]: sub /= 2
+  if sub > a: sub = a - 1
+  ns = 2
+  if sub > 2:
+    ns = randint(2,sub)
+  nb = a - ns
+  db = 0
+  ds = 1
+  if nb < 0: nb *= -1
+  if nb == 0: nb = 1
+  while db < nb or db == 0:
+    ds = 1
+    if sub > 2:
+      ds = randint(1,sub - 1)
+    db = a - ds
+    spin += 1
+    if spin > 100: db = nb + 1
+  n = nb * b
+  d = db * b
+  if n == d and n in [4,9,16,25,36,49,64,81,100,121,144,169,196,225]: n = sqrt(d)
+  elif n == d and n%2 == 0: d = n + 2
+  elif n == d and allow1 == 0 and n > 3:
+    n -= randint(2,n - 3)
+  elif n == d and allow1 == 0: n = randint(1,30); d = n * randint(2,3)
+  b = euclid_gcf(d,n)
+  nb = n / b
+  db = d / b
+  o = "%i/%i (%i/%i GCF=%i)" % (n,d,nb,db,b)
+  if nb != nb+.0 or db != db+.0: return "error %s" % o
+  return o
+
+def euclid_gcf(a,b):
+  while b != 0:
+    a,b = b,a%b
+  return a
 
 def saywordprob(t,x,v,a,b,c='',d='',e=''):
   o = ""
@@ -160,11 +211,11 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   return o
 
 def unittest(a = 0, b = 0, c = 0):
-  print showsimpineq(a,b,'x',c)
+  print showfracgcf(a,b)
   '''
   if a == 0 and a == b and a == c:
-    for a in range(1,10):
-      for b in range(1,10):
+  for a in range(0,4):
+    for b in range(0,10):
         for c in range(1,10):
           (d,e,f) = trianglesanity(a,b,c)
           print "Triangle: %i %i %i from given %i %i %i for change of %i %i %i" % (d,e,f,a,b,c,d-a,e-b,f-c)
