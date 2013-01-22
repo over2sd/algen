@@ -6,5 +6,4 @@ Generate PNG images for geometric exercises
 Generate fraction exercises
 Generate graphing exercises
 Fractional coefficient exercises
-Have triangle maker fix bad trios instead of kicking them back (hc-=1, b+=1, etc)
-Integrate triangle maker into triangle exercise generator
+Refocus triangle maker to allow noninteger heights, side, or base, per a type flag. Also add flag to parallelogram generator for which to make integer: height or diagonal

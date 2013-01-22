@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.04"
+ver = "0.9.05"
 
 def main(argv):
   debugutest = 0
@@ -117,7 +117,7 @@ def main(argv):
         part3 = 0
       else:
         part3 = fabs(part3)
-      o = showalgex.showtriangle(unit,part1,part2,part3)
+      o = showalgex.showtriangle(unit,part1,part2,part3,1,randint(1,2))
 
     elif probtype == '4':
         if u >= 0:

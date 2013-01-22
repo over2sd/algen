@@ -77,10 +77,12 @@ def showgcfax2pbxmc(v,x,d,e,f,g):
   return cleaneq(o)
 
 #  print "		3/8: area/perim of a triangle"
-def showtriangle(u,m,n,b=0):
+def showtriangle(u,m,n,b=0,integers=0,t=0):
   a = 1
   c = 1
+  h = 1
   o = ""
+  z = ""
   if b == 0: # if o != 0, generate triangle that is not right
     (m,b,n) = trianglesanity(m,b,n)
     if (n>m): # Shouldn't happen, but let's fix it automagically.
@@ -98,41 +100,44 @@ def showtriangle(u,m,n,b=0):
     o += "A right triangle has legs x %s and %i%s and a hypotenuse of %i%s. Find the area and perimeter. (x=%i%s, a=%.4f%s^2, p=%.4f%s)" % (u,b,u,c,u,a,u,area,u,p,u)
   else:
     (m,b,n) = trianglesanity(m,b,n)
+    if integers: (m,n,b,h,z) = makewholetri(m,b,n,t)
+    print h,
     area = areafromsides(b,m,n)
     a = m
     c = n
     h = 2*area/b
     p = a+b+c
-    o += "A triangle has sides of %i%s, %i%s, and %i%s. The height of the triangle, measured with the second side (%i%s) as the base, is %.6f%s. Find the perimeter and area. (p=%.3f%s, a=%.3f%s^2)" % (a,u,b,u,c,u,b,u,h,u,p,u,area,u)
+    if a == int(a):
+     o += "A%s triangle has sides of %i%s, %i%s, and %i%s. The height of the triangle, measured with the second side (%i%s) as the base, is %.6f%s. Find the perimeter and area. (p=%.3f%s, a=%.3f%s^2)" % (z,a,u,b,u,c,u,b,u,h,u,p,u,area,u)
+    else:
+     o += "A%s triangle has sides of %.2f%s, %i%s, and %i%s. The height of the triangle, measured with the second side (%i%s) as the base, is %i%s. Find the perimeter and area. (p=%.3f%s, a=%.3f%s^2)" % (z,a,u,b,u,c,u,b,u,h,u,p,u,area,u)
   return cleaneq(o)
 
-def makewholetri(a,b,c,obtuse): # please send only positive integers
+def makewholetri(a,b,c,bigangle):
+  s = ""
   if a < 2: a = 2
   if b < 2: b = 2
   if c < 2: c = 2
-  if (a == b and b == c) or 0 in [a,b,c]:
-    print "no triangle"
-    return
+  if (a == b and b == c):
+    a += 1; b += 2; c += 3
   hc,a,b = sorted([a,b,c])
-  if hc>a: a = hc+1
-  if hc>b: b = hc+1
   d = sqrt((a*a)-(hc*hc))
   e = sqrt((b*b)-(hc*hc))
-  f = (sqrt(b*b)+(a*a))
-  if obtuse:
-    c = e - d
-    if c == 0: c = f+1
-  else:
-    c = e + d
+  f = sqrt((b*b)+(a*a))
+  if bigangle in [0,1]: # [any angle okay, acute]
+    c = d+e
     if c > f: c = f # any bigger, and it's obtuse at the apex, so make it right, and it'll be rounded down to acute
-  s = "."
+  else: # obtuse
+    c = e - d
+    if c <= 1 or (c < f and (e+d < f)): c = f+1
   if c != int(c):
     c = int(c)
-    if obtuse: d = e - c
-    else: d = c - e
+    if bigangle == 2 and e > c: d = e - c # obtuse
+    else: d = c - e # acute/any
     a = sqrt((d*d)+(hc*hc))
-  print "Given height %i and sides %.4f and %i, base is %i." % (hc,a,b,c)
-  return (a,b,c,hc)
+  if c == sqrt((a*a)+(b*b)) or b == sqrt((a*a)+(c*c)) or a == sqrt((b*b)+(c*c)): s = " right"
+#  print "=> h: %i ss: %.4f and %i, b: %i. (%s)" % (hc,a,b,c,s)
+  return (a,b,c,hc,s)
 
 #  print "		4: area/perim of a parallelogram"
 def showpara(b,s,d,u): # base, side, diagonal, unit string
@@ -241,16 +246,11 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
 def unittest(a = 0, b = 0, c = 0):
   #print showfracgcf(a,b)
   #if a == 0 and a == b and a == c:
-  for a in range(1,12):
-    for b in range(1,8):
+  for a in range(8,12):
+    for b in range(3,10):
         for c in range(1,4):
-          for d in [0,1]:
-            makewholetri(a,b,c,d)
-  '''        print "Triangle: %i %i %i from given %i %i %i for change of %i %i %i" % (d,e,f,a,b,c,d-a,e-b,f-c)
-  else:
-    print "%i %i %i " % (a,b,c),
-    (d,e,f) = trianglesanity(a,b,c)
-    print "Triangle: %i %i %i from Given %i %i %i for change of %i %i %i" % (d,e,f,a,b,c,d-a,e-b,f-c)
-  '''
+          for d in [0,1,2]:
+            (e,f,g,h,i) = makewholetri(a,b,c,d)
+            print "Triangle: %i %i %i from given %i %i %i (%s)" % (e,f,g,a,b,c,i)
   return
 
