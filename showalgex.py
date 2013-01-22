@@ -106,6 +106,34 @@ def showtriangle(u,m,n,b=0):
     o += "A triangle has sides of %i%s, %i%s, and %i%s. The height of the triangle, measured with the second side (%i%s) as the base, is %.6f%s. Find the perimeter and area. (p=%.3f%s, a=%.3f%s^2)" % (a,u,b,u,c,u,b,u,h,u,p,u,area,u)
   return cleaneq(o)
 
+def makewholetri(a,b,c,obtuse): # please send only positive integers
+  if a < 2: a = 2
+  if b < 2: b = 2
+  if c < 2: c = 2
+  if (a == b and b == c) or 0 in [a,b,c]:
+    print "no triangle"
+    return
+  hc,a,b = sorted([a,b,c])
+  if hc>a: a = hc+1
+  if hc>b: b = hc+1
+  d = sqrt((a*a)-(hc*hc))
+  e = sqrt((b*b)-(hc*hc))
+  f = (sqrt(b*b)+(a*a))
+  if obtuse:
+    c = e - d
+    if c == 0: c = f+1
+  else:
+    c = e + d
+    if c > f: c = f # any bigger, and it's obtuse at the apex, so make it right, and it'll be rounded down to acute
+  s = "."
+  if c != int(c):
+    c = int(c)
+    if obtuse: d = e - c
+    else: d = c - e
+    a = sqrt((d*d)+(hc*hc))
+  print "Given height %i and sides %.4f and %i, base is %i." % (hc,a,b,c)
+  return (a,b,c,hc)
+
 #  print "		4: area/perim of a parallelogram"
 def showpara(b,s,d,u): # base, side, diagonal, unit string
   (b,s,d) = trianglesanity(b,s,d)
@@ -211,14 +239,14 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   return o
 
 def unittest(a = 0, b = 0, c = 0):
-  print showfracgcf(a,b)
-  '''
-  if a == 0 and a == b and a == c:
-  for a in range(0,4):
-    for b in range(0,10):
-        for c in range(1,10):
-          (d,e,f) = trianglesanity(a,b,c)
-          print "Triangle: %i %i %i from given %i %i %i for change of %i %i %i" % (d,e,f,a,b,c,d-a,e-b,f-c)
+  #print showfracgcf(a,b)
+  #if a == 0 and a == b and a == c:
+  for a in range(1,12):
+    for b in range(1,8):
+        for c in range(1,4):
+          for d in [0,1]:
+            makewholetri(a,b,c,d)
+  '''        print "Triangle: %i %i %i from given %i %i %i for change of %i %i %i" % (d,e,f,a,b,c,d-a,e-b,f-c)
   else:
     print "%i %i %i " % (a,b,c),
     (d,e,f) = trianglesanity(a,b,c)
