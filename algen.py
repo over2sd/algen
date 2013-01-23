@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.05"
+ver = "0.9.06"
 
 def main(argv):
   debugutest = 0
@@ -20,12 +20,13 @@ def main(argv):
   lines = []
   boring = [-1,0,1]
   gcfone = 0
-  tlist = "012345678"
+  tlist = "0123456789"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
   unit = "spans"
+  integers = 0
   try:
-    opts, args = getopt.getopt(argv, "c:hn:o:v:x:01t:u:", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone"])
+    opts, args = getopt.getopt(argv, "ac:hn:o:t:u:v:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt"])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -64,6 +65,8 @@ def main(argv):
         print "Argument is not valid. Ignoring %s %s and using \"%s\" for possible variables.\n" % (opt,arg,vlist)
     elif opt in ("-0","--allowzero"):
       boring = []
+    elif opt in ("-a","--wholealt"):
+      integers = 1
     elif opt in ("-1","--allowone"):
       gcfone = 1
     elif opt == "--test":
@@ -117,14 +120,14 @@ def main(argv):
         part3 = 0
       else:
         part3 = fabs(part3)
-      o = showalgex.showtriangle(unit,part1,part2,part3,1,randint(1,2))
+      o = showalgex.showtriangle(unit,part1,part2,part3,integers,0)
 
     elif probtype == '4':
         if u >= 0:
           u = fabs(randint(mn,mx))
           u = u % len(units)
           unit = units[int(u)]
-        o = showalgex.showpara(part1,part2,part3,unit)
+        o = showalgex.showpara(part1,part2,part3,unit,integers)
     elif probtype == '5': o = showalgex.showabxmc(part1,part2,part3,var,part4)
     elif probtype == '6': o = showalgex.showx3my3(part1,var,part2)
     elif probtype == '8': o = showalgex.showsimpineq(part1,part2,var,part3)
@@ -176,7 +179,8 @@ def usage():
   print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
   unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]
   unit = unit[randint(0,len(unit)-1)]
-  print "-u <string>, --unit <string>		Text to put after measurements\n\t(e.g., %s)" % unit
+  print "-u <string>, --unit <string>:		Text to put after measurements\n\t(e.g., %s)" % unit
+  print "-a, --wholealt:		Do not allow decimal points in altitudes"
 
 if __name__ == "__main__":
   print "\nLoading Algebra Exercise Generator v%s..." % (ver)

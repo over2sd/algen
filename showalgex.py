@@ -107,10 +107,20 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
     c = n
     h = 2*area/b
     p = a+b+c
-    if a == int(a):
-     o += "A%s triangle has sides of %i%s, %i%s, and %i%s. The height of the triangle, measured with the second side (%i%s) as the base, is %.6f%s. Find the perimeter and area. (p=%.3f%s, a=%.3f%s^2)" % (z,a,u,b,u,c,u,b,u,h,u,p,u,area,u)
-    else:
-     o += "A%s triangle has sides of %.2f%s, %i%s, and %i%s. The height of the triangle, measured with the second side (%i%s) as the base, is %i%s. Find the perimeter and area. (p=%.3f%s, a=%.3f%s^2)" % (z,a,u,b,u,c,u,b,u,h,u,p,u,area,u)
+    y = "%.3f%s" % (a,u)
+    if a == int(a) or u == "px":
+      y = "%i%s" % (a,u)
+    elif u == "AU": # a bit of fun with enormous distances
+      y = "%f%s" % (a,u)
+    bh = "%.3f%s" % (h,u)
+    if h == int(h) or u == "px":
+      bh = "%i%s" % (h,u)
+    elif u == "AU":
+      bh = "%f%s" % (h,u)
+    w = "%i%s" % (b,u) if (b == int(b) or u == "px") else "%.3f%s" % (b,u)
+    area = "%i%s" % (area,u) if u == "px" or area == int(area) else "%.3f%s" % (area,u)
+    p = "%i%s" % (p,u) if u == "px" or p == int(p) else "%.3f%s" % (p,u)
+    o += "A%s triangle has sides of %s, %s, and %i%s. The height of the triangle, measured with the second side (%s) as the base, is %s. Find the perimeter and area. (p=%s, a=%s^2)" % (z,y,w,c,u,w,bh,p,area)
   return cleaneq(o)
 
 def makewholetri(a,b,c,bigangle):
@@ -120,7 +130,7 @@ def makewholetri(a,b,c,bigangle):
   if c < 2: c = 2
   if (a == b and b == c):
     a += 1; b += 2; c += 3
-  hc,a,b = sorted([a,b,c])
+  hc,a,b = sorted([a,b,c]) # line 133
   d = sqrt((a*a)-(hc*hc))
   e = sqrt((b*b)-(hc*hc))
   f = sqrt((b*b)+(a*a))
@@ -130,22 +140,30 @@ def makewholetri(a,b,c,bigangle):
   else: # obtuse
     c = e - d
     if c <= 1 or (c < f and (e+d < f)): c = f+1
-  if c != int(c):
+  if c != int(c): # note to self: don't deindent: doing more here than flooring c
     c = int(c)
     if bigangle == 2 and e > c: d = e - c # obtuse
     else: d = c - e # acute/any
     a = sqrt((d*d)+(hc*hc))
-  if c == sqrt((a*a)+(b*b)) or b == sqrt((a*a)+(c*c)) or a == sqrt((b*b)+(c*c)): s = " right"
+#  print (c*c,b*b,a*a),
+  if c == sqrt((a*a)+(b*b)) or b == sqrt((a*a)+(c*c)): s = " right" #  or a == sqrt((b*b)+(c*c)) # removed because it shouldn't ever be true (see line 133)
+  elif ((c*c < ((b*b)-(a*a))) or (c*c > ((b*b)+(a*a)))): s = "n obtuse"
+  else: s = "n acute"
 #  print "=> h: %i ss: %.4f and %i, b: %i. (%s)" % (hc,a,b,c,s)
   return (a,b,c,hc,s)
 
 #  print "		4: area/perim of a parallelogram"
-def showpara(b,s,d,u): # base, side, diagonal, unit string
+def showpara(b,s,d,u,integers=0): # base, side, diagonal, unit string, whole altitude? (opt)
   (b,s,d) = trianglesanity(b,s,d)
   area = 2*(areafromsides(b,s,d))
   h = area/b
+  if u == "px": u = "cm" # no pixels for this one
+  if integers and h != int(h):
+    h = int(h+0.5)
+    area = h*b
+  h = "%i%u" % (h,u) if h == int(h) else "%.6f%s" % (h,u)
   p = 2*b+2*s
-  o = "A parallelogram has a height of %.6f%s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter. (A=%.3f%s^2, P=%i%s)" % (h,u,b,u,s,u,area,u,p,u)
+  o = "A parallelogram has a height of %s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter. (A=%.3f%s^2, P=%i%s)" % (h,b,u,s,u,area,u,p,u)
   return o
 
 #  print "		5: a(bx-c)=d"
@@ -246,11 +264,11 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
 def unittest(a = 0, b = 0, c = 0):
   #print showfracgcf(a,b)
   #if a == 0 and a == b and a == c:
-  for a in range(8,12):
-    for b in range(3,10):
-        for c in range(1,4):
-          for d in [0,1,2]:
-            (e,f,g,h,i) = makewholetri(a,b,c,d)
-            print "Triangle: %i %i %i from given %i %i %i (%s)" % (e,f,g,a,b,c,i)
+  for a in range(1,10):
+    for b in range(1,10):
+        for c in range(1,10):
+#          for d in [0,1,2]:
+          (e,f,g,h,i) = makewholetri(a,b,c,d)
+          print "Triangle: %i %i %i from given %i %i %i (%s)" % (e,f,g,a,b,c,i)
   return
 
