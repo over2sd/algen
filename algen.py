@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.06"
+ver = "0.9.07"
 
 def main(argv):
   debugutest = 0
@@ -20,7 +20,7 @@ def main(argv):
   lines = []
   boring = [-1,0,1]
   gcfone = 0
-  tlist = "0123456789"
+  tlist = "0123456789a"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
   unit = "spans"
@@ -132,6 +132,7 @@ def main(argv):
     elif probtype == '6': o = showalgex.showx3my3(part1,var,part2)
     elif probtype == '8': o = showalgex.showsimpineq(part1,part2,var,part3)
     elif probtype == '9': o = showalgex.showfracgcf(part1,part2,gcfone)
+    elif probtype == 'a': o = showalgex.showaxpbeqcfrac(part1,part2,part3,var,part4)
     print "%i) %s" % (i,o)
     if out is not "": lines.append("\n%s" % o)
   if out is not "":

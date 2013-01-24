@@ -11,30 +11,25 @@ Option flags:
 -c <#>, --count <#>:		How many exercises to generate
 
 -n <#>, --min <#>:		Minimum value for variable, coefficients,
-
-	and constants
+and constants
 
 -x <#>, --max <#>:		Maximum value for variable, coefficients,
-
-	and constants
+and constants
 
 -v <char|string>, --vars <char|string>:		String of lowercase letters
-
-	that can be used for variables
+that can be used for variables
 
 	Examples: "-v x", "-v abc"
 
 -o <file>, --outfile <file>:		A filename where the program will
-
-	append its results for easy copy/paste
+append its results for easy copy/paste
 
 -t <types>, --types <types>:		Type(s) of exercises to generate:
 
 	Examples: "-t 138af" "-t 2"
 
 -0, --allowzero:		Allow value of x, a, b, c... to be
-
-	boring (0, 1, or -1)
+boring (0, 1, or -1)
 
 -u <string>, --unit <string>:		Text to put after measurements
 

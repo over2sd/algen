@@ -1,7 +1,17 @@
 # Show algebra problems functions
 import re
-from math import (sqrt, fabs)
+from math import (sqrt, fabs, fmod)
 from random import randint
+
+def trimfloat(f,p=1):
+  o = "%f" % f
+  mn = 3
+  if '.' not in o: return o
+  else: mn = o.find('.') + 2
+  if mn < p + 2 or mn < 3: mn = p + 2
+  while o[-1] == '0' and len(o) > mn: # len(0.0) = 3
+    o = o[:-1]
+  return o
 
 def trianglesanity(a,b,c):
   # No side may be 0
@@ -97,7 +107,7 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
     p = a+b+c
     h = ((a*a)+(b*b))/c
     #  print "Given %i and %i: a=%i b=%i c=%i=%i" % (m,n,a,b,c,h)
-    o += "A right triangle has legs x %s and %i%s and a hypotenuse of %i%s. Find the area and perimeter. (x=%i%s, a=%.4f%s^2, p=%.4f%s)" % (u,b,u,c,u,a,u,area,u,p,u)
+    o += "A right triangle has legs x %s and %i%s and a hypotenuse of %i%s. Find the area and perimeter. (x=%i%s, a=%s%s^2, p=%s%s)" % (u,b,u,c,u,a,u,trimfloat(area),u,trimfloat(p),u)
   else:
     (m,b,n) = trianglesanity(m,b,n)
     if integers: (m,n,b,h,z) = makewholetri(m,b,n,t)
@@ -163,7 +173,7 @@ def showpara(b,s,d,u,integers=0): # base, side, diagonal, unit string, whole alt
     area = h*b
   h = "%i%u" % (h,u) if h == int(h) else "%.6f%s" % (h,u)
   p = 2*b+2*s
-  o = "A parallelogram has a height of %s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter. (A=%.3f%s^2, P=%i%s)" % (h,b,u,s,u,area,u,p,u)
+  o = "A parallelogram has a height of %s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter. (A=%s%s^2, P=%i%s)" % (h,b,u,s,u,trimfloat(area),u,p,u)
   return o
 
 #  print "		5: a(bx-c)=d"
@@ -234,7 +244,7 @@ def showfracgcf(a, b,allow1):
   d = db * b
   if n == d and n in [4,9,16,25,36,49,64,81,100,121,144,169,196,225]: n = sqrt(d)
   elif n == d and n%2 == 0: d = n + 2
-  elif n == d and allow1 == 0 and n > 3:
+  elif n == d and allow1 == 0 and n > 6:
     n -= randint(2,n - 3)
   elif n == d and allow1 == 0: n = randint(1,30); d = n * randint(2,3)
   b = euclid_gcf(d,n)
@@ -248,6 +258,33 @@ def euclid_gcf(a,b):
   while b != 0:
     a,b = b,a%b
   return a
+
+def showaxpbeqcfrac(v,a1,a2,x,b):
+  if a1 < 0 and a2 < 0: a1 *= -1; a2 *= -1
+  a1 += 0.00
+  a2 += 0.00
+  b = int(b)
+  c = v*a1
+#  print c,
+  if c/a2 != int(c/a2):
+    even = 0
+    denom = 1
+    r = fmod(c,a2)
+    d = a2 * -1 if a2 < 0 else a2
+    w = (c - r)/d + b
+    if a2 < 0: w *= -1
+#    while even == 0:
+#      denom += 1
+#      d = f * denom
+#      if d == int(d): even = 1
+#    c = trimfloat(c)
+
+    c = "%i+%i/%i" % (w,r,d)
+  else:
+    c = c/a2+b
+    c = "%i" % c
+  o = "%i%c/%i+%i=%s (%c=%i)" % (a1,x,a2,b,c,x,v)
+  return cleaneq(o)
 
 def saywordprob(t,x,v,a,b,c='',d='',e=''):
   o = ""
@@ -264,11 +301,11 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
 def unittest(a = 0, b = 0, c = 0):
   #print showfracgcf(a,b)
   #if a == 0 and a == b and a == c:
-  for a in range(1,10):
-    for b in range(1,10):
-        for c in range(1,10):
+#  for a in range(1,10):
+#    for b in range(1,10):
+#        for c in range(1,10):
 #          for d in [0,1,2]:
-          (e,f,g,h,i) = makewholetri(a,b,c,d)
-          print "Triangle: %i %i %i from given %i %i %i (%s)" % (e,f,g,a,b,c,i)
+#          print showaxpbeqcfrac(7,a,b,'x',c)
+#          print "Triangle: %i %i %i from given %i %i %i (%s)" % (e,f,g,a,b,c,i)
   return
 
