@@ -1,3 +1,6 @@
+#!/usr/bin/python -tt
+# -*- coding: utf-8 -*-
+
 # Show algebra problems functions
 import re
 from math import (sqrt, fabs, fmod)
@@ -53,8 +56,9 @@ def cleaneq(s):
 #  print "		0: ax+b=c"
 def showaxpbeqc(v,a,x,b):
   c = (v*a)+b
-  o = "%i%c+%i=%i (%c=%i)" % (a,x,b,c,x,v)
-  return cleaneq(o)
+  o = "%i%c+%i=%i" % (a,x,b,c)
+  k = "(%c=%i)" % (x,v)
+  return (cleaneq(o),cleaneq(k))
 
 #  print "		1: ax+b=cx+d"
 def showaxbeqcxd(v,a,x,b,c):
@@ -67,10 +71,11 @@ def showaxbeqcxd(v,a,x,b,c):
   d = one - (v*c)
   o = ""
   if c < 0: # reverse order of second half if variable part is negative
-    o = "%i%c+%i=%i+%i%c (%c=%i)" % (a,x,b,d,c,x,x,v)
+    o = "%i%c+%i=%i+%i%c" % (a,x,b,d,c,x)
   else:
-    o = "%i%c+%i=%i%c+%i (%c=%i)" % (a,x,b,c,x,d,x,v)
-  return cleaneq(o)
+    o = "%i%c+%i=%i%c+%i" % (a,x,b,c,x,d)
+  k = "(%c=%i)" %  (x,v)
+  return (cleaneq(o),cleaneq(k))
 
 #  print "		2: y=ax^2+bx-c (or GCF)"
 def showgcfax2pbxmc(v,x,d,e,f,g):
@@ -83,8 +88,9 @@ def showgcfax2pbxmc(v,x,d,e,f,g):
   b = i+j
   c = k
   t = (a*(v*v))+(b*v)-c
-  o = "%i%c^2+%i%c-%i (%i%c+%i)(%i%c-%i) (f(%i)=%i)" % (a,x,b,x,c,d,x,e,f,x,g,v,t)
-  return cleaneq(o)
+  o = "%i%c^2+%i%c-%i" % (a,x,b,x,c)
+  k = "(%i%c+%i)(%i%c-%i) (f(%i)=%i)" % (d,x,e,f,x,g,v,t)
+  return (cleaneq(o),cleaneq(k))
 
 #  print "		3/8: area/perim of a triangle"
 def showtriangle(u,m,n,b=0,integers=0,t=0):
@@ -93,6 +99,7 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
   h = 1
   o = ""
   z = ""
+  k = ""
   if b == 0: # if o != 0, generate triangle that is not right
     (m,b,n) = trianglesanity(m,b,n)
     if (n>m): # Shouldn't happen, but let's fix it automagically.
@@ -107,7 +114,8 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
     p = a+b+c
     h = ((a*a)+(b*b))/c
     #  print "Given %i and %i: a=%i b=%i c=%i=%i" % (m,n,a,b,c,h)
-    o += "A right triangle has legs x %s and %i%s and a hypotenuse of %i%s. Find the area and perimeter. (x=%i%s, a=%s%s^2, p=%s%s)" % (u,b,u,c,u,a,u,trimfloat(area),u,trimfloat(p),u)
+    o += "A right triangle has legs x %s and %i%s and a hypotenuse of %i%s. Find the area and perimeter." % (u,b,u,c,u)
+    k = "(x=%i%s, a=%s%s^2, p=%s%s)" % (a,u,trimfloat(area),u,trimfloat(p),u)
   else:
     (m,b,n) = trianglesanity(m,b,n)
     if integers: (m,n,b,h,z) = makewholetri(m,b,n,t)
@@ -130,8 +138,9 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
     w = "%i%s" % (b,u) if (b == int(b) or u == "px") else "%.3f%s" % (b,u)
     area = "%i%s" % (area,u) if u == "px" or area == int(area) else "%.3f%s" % (area,u)
     p = "%i%s" % (p,u) if u == "px" or p == int(p) else "%.3f%s" % (p,u)
-    o += "A%s triangle has sides of %s, %s, and %i%s. The height of the triangle, measured with the second side (%s) as the base, is %s. Find the perimeter and area. (p=%s, a=%s^2)" % (z,y,w,c,u,w,bh,p,area)
-  return cleaneq(o)
+    o += "A%s triangle has sides of %s, %s, and %i%s. The height of the triangle, measured with the second side (%s) as the base, is %s. Find the perimeter and area." % (z,y,w,c,u,w,bh)
+    k = "(p=%s, a=%s^2)" % (p,area)
+  return (cleaneq(o),cleaneq(k))
 
 def makewholetri(a,b,c,bigangle):
   s = ""
@@ -173,16 +182,18 @@ def showpara(b,s,d,u,integers=0): # base, side, diagonal, unit string, whole alt
     area = h*b
   h = "%i%u" % (h,u) if h == int(h) else "%.6f%s" % (h,u)
   p = 2*b+2*s
-  o = "A parallelogram has a height of %s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter. (A=%s%s^2, P=%i%s)" % (h,b,u,s,u,trimfloat(area),u,p,u)
-  return o
+  o = "A parallelogram has a height of %s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter." % (h,b,u,s,u)
+  k = "(A=%s%s^2, P=%i%s)" % (trimfloat(area),u,p,u)
+  return (o,k)
 
 #  print "		5: a(bx-c)=d"
 def showabxmc(v,a,b,x,c):
   e = a*(b*v)
   f = a*c
   d = e-f
-  o = "%i(%i%c-%i)=%i (%c=%i)" % (a,b,x,c,d,x,v)
-  return cleaneq(o)
+  o = "%i(%i%c-%i)=%i" % (a,b,x,c,d)
+  k = "(%c=%i)" % (x,v)
+  return (cleaneq(o),k)
 
 #  print "		6: x^3-y^3"
 def showx3my3(v,x,a):
@@ -191,8 +202,9 @@ def showx3my3(v,x,a):
   y3 = a*a*a
   b = a*a
   c = (v*v*v) - y3
-  o = "%c^3-%i (%c-%i)(%c^2+%i%c+%i) (f(%i)=%i)" % (x,y3,x,a,x,a,x,b,v,c)
-  return cleaneq(o)
+  o = "%c^3-%i" % (x,y3)
+  k = "(%c-%i)(%c^2+%i%c+%i) (f(%i)=%i)" % (x,a,x,a,x,b,v,c)
+  return (cleaneq(o),cleaneq(k))
 
 def showsimpineq(v,a,x,b):
   i = '='
@@ -205,8 +217,9 @@ def showsimpineq(v,a,x,b):
   if (a < 0):
     e = 2
   i2 = ilist[(d+e) % 4]
-  o = "%i%c+%i%s%i (%c%s%i)" % (a,x,b,i2,c,x,i,v)
-  return cleaneq(o)
+  o = "%i%c+%i%s%i" % (a,x,b,i2,c)
+  k = "(%c%s%i)" % (x,i,v)
+  return (cleaneq(o),k)
 
 def showfracgcf(a, b,allow1):
   spin = 0
@@ -250,9 +263,10 @@ def showfracgcf(a, b,allow1):
   b = euclid_gcf(d,n)
   nb = n / b
   db = d / b
-  o = "%i/%i (%i/%i GCF=%i)" % (n,d,nb,db,b)
-  if nb != nb+.0 or db != db+.0: return "error %s" % o
-  return o
+  o = "%i/%i" % (n,d)
+  k = "(%i/%i GCF=%i)" % (nb,db,b)
+  if nb != nb+0.00 or db != db+0.00: return "error %s" % o
+  return (o,k)
 
 def euclid_gcf(a,b):
   while b != 0:
@@ -283,8 +297,9 @@ def showaxpbeqcfrac(v,a1,a2,x,b):
   else:
     c = c/a2+b
     c = "%i" % c
-  o = "%i%c/%i+%i=%s (%c=%i)" % (a1,x,a2,b,c,x,v)
-  return cleaneq(o)
+  o = "%i%c/%i+%i=%s" % (a1,x,a2,b,c)
+  k = "(%c=%i)" % (x,v)
+  return (cleaneq(o),k)
 
 def saywordprob(t,x,v,a,b,c='',d='',e=''):
   o = ""
@@ -309,3 +324,6 @@ def unittest(a = 0, b = 0, c = 0):
 #          print "Triangle: %i %i %i from given %i %i %i (%s)" % (e,f,g,a,b,c,i)
   return
 
+if __name__ == "__main__":
+  print "\nThis file is not meant to be called by the user. Please use algen.py instead."
+  exit(-1)

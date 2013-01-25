@@ -4,4 +4,3 @@ Add check for negative values passed to geometry exercises
 Rearrange type flags so similar level exercises are near each other (and specific types come after similar generic types)
 Generate PNG images for geometric exercises
 Generate graphing exercises
-Exercise generators return tuple containing (exercise,answer); Add flag to main program to display/write answers after exercises in a group, or after each exercise (default, and current behavior)

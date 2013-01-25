@@ -25,8 +25,10 @@ def main(argv):
   u = 0
   unit = "spans"
   integers = 0
+  keysep = 0
+  key = []
   try:
-    opts, args = getopt.getopt(argv, "ac:hn:o:t:u:v:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt"])
+    opts, args = getopt.getopt(argv, "ac:hkn:o:t:u:v:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter"])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -65,6 +67,8 @@ def main(argv):
         print "Argument is not valid. Ignoring %s %s and using \"%s\" for possible variables.\n" % (opt,arg,vlist)
     elif opt in ("-0","--allowzero"):
       boring = []
+    elif opt in ("-k","--keyafter"):
+      keysep = 1
     elif opt in ("-a","--wholealt"):
       integers = 1
     elif opt in ("-1","--allowone"):
@@ -105,9 +109,9 @@ def main(argv):
     var = vlist[randint(0,len(vlist)-1)]
     i += 1
     o = ""
-    if probtype == '0': o = showalgex.showaxpbeqc(part1,part2,var,part3)
-    elif probtype == '1': o = showalgex.showaxbeqcxd(part1,part2,var,part3,part4)
-    elif probtype == '2': o = showalgex.showgcfax2pbxmc(part1,var,part2,part3,part4,part5)
+    if probtype == '0': (o,a) = showalgex.showaxpbeqc(part1,part2,var,part3)
+    elif probtype == '1': (o,a) = showalgex.showaxbeqcxd(part1,part2,var,part3,part4)
+    elif probtype == '2': (o,a) = showalgex.showgcfax2pbxmc(part1,var,part2,part3,part4,part5)
     elif probtype in '37':
       if u >= 0:
         u = fabs(randint(mn,mx))
@@ -120,25 +124,33 @@ def main(argv):
         part3 = 0
       else:
         part3 = fabs(part3)
-      o = showalgex.showtriangle(unit,part1,part2,part3,integers,0)
+      (o,a) = showalgex.showtriangle(unit,part1,part2,part3,integers,0)
 
     elif probtype == '4':
         if u >= 0:
           u = fabs(randint(mn,mx))
           u = u % len(units)
           unit = units[int(u)]
-        o = showalgex.showpara(part1,part2,part3,unit,integers)
-    elif probtype == '5': o = showalgex.showabxmc(part1,part2,part3,var,part4)
-    elif probtype == '6': o = showalgex.showx3my3(part1,var,part2)
-    elif probtype == '8': o = showalgex.showsimpineq(part1,part2,var,part3)
-    elif probtype == '9': o = showalgex.showfracgcf(part1,part2,gcfone)
-    elif probtype == 'a': o = showalgex.showaxpbeqcfrac(part1,part2,part3,var,part4)
+        (o,a) = showalgex.showpara(part1,part2,part3,unit,integers)
+    elif probtype == '5': (o,a) = showalgex.showabxmc(part1,part2,part3,var,part4)
+    elif probtype == '6': (o,a) = showalgex.showx3my3(part1,var,part2)
+    elif probtype == '8': (o,a) = showalgex.showsimpineq(part1,part2,var,part3)
+    elif probtype == '9': (o,a) = showalgex.showfracgcf(part1,part2,gcfone)
+    elif probtype == 'a': (o,a) = showalgex.showaxpbeqcfrac(part1,part2,part3,var,part4)
+    if keysep:
+      key.append("%i) %s" % (i,a))
+    else: o = "%s %s" % (o,a)
     print "%i) %s" % (i,o)
-    if out is not "": lines.append("\n%s" % o)
+    if out is not "": lines.append("\n%i) %s" % o)
+  for l in key:
+    print "a%s" % l
   if out is not "":
     with open(out,'a') as f:
       for l in lines:
         f.write(l)
+      if len(key) > 0: f.write("\nAnswers:")
+      for l in key:
+        f.write("\n%s" % l)
       f.write("\n")
       f.close()
 
@@ -182,6 +194,7 @@ def usage():
   unit = unit[randint(0,len(unit)-1)]
   print "-u <string>, --unit <string>:		Text to put after measurements\n\t(e.g., %s)" % unit
   print "-a, --wholealt:		Do not allow decimal points in altitudes"
+  print "-k, --keyafter:		Give key after all exercises (default after each)"
 
 if __name__ == "__main__":
   print "\nLoading Algebra Exercise Generator v%s..." % (ver)
