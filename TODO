@@ -4,3 +4,4 @@ Add check for negative values passed to geometry exercises
 Rearrange type flags so similar level exercises are near each other (and specific types come after similar generic types)
 Generate PNG images for geometric exercises
 Generate graphing exercises
+Better bounding for fraction generators

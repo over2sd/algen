@@ -274,26 +274,20 @@ def euclid_gcf(a,b):
   return a
 
 def showaxpbeqcfrac(v,a1,a2,x,b):
-  if a1 < 0 and a2 < 0: a1 *= -1; a2 *= -1
-  a1 += 0.00
-  a2 += 0.00
+  if a1 < 0: a1 *= -1
+  if a2 < 0: a2 *= -1
+  a1 = int(a1)
+  a2 = int(a2)
+  a1 += 0.00 if a1 > 0 else 2.00
+  a2 += 0.00 if a2 > 0 else 7.00
   b = int(b)
   c = v*a1
 #  print c,
   if c/a2 != int(c/a2):
-    even = 0
-    denom = 1
-    r = fmod(c,a2)
-    d = a2 * -1 if a2 < 0 else a2
-    w = (c - r)/d + b
+    r = fabs(fmod(c,a2))
+    w = (c - r)/a2 + b
     if a2 < 0: w *= -1
-#    while even == 0:
-#      denom += 1
-#      d = f * denom
-#      if d == int(d): even = 1
-#    c = trimfloat(c)
-
-    c = "%i+%i/%i" % (w,r,d)
+    c = "%i %i/%i" % (w,r,a2)
   else:
     c = c/a2+b
     c = "%i" % c
