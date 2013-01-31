@@ -5,3 +5,5 @@ Rearrange type flags so similar level exercises are near each other (and specifi
 Generate PNG images for geometric exercises
 Generate graphing exercises
 Better bounding for fraction generators
+When generating fractional coefficients, reroll part1/part2 if part1=part2
+Integrate fractional coefficients into all exercise types

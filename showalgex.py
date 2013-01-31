@@ -8,7 +8,7 @@ from random import randint
 from fractions import Fraction
 from decimal import Decimal
 
-def fractionize(n,x,d):
+def fractionize(n,x,d,mixedvar=0):
   if d == 0: return "div/0! undefined"
   if n == 0: return "0"
   f = ""
@@ -17,8 +17,12 @@ def fractionize(n,x,d):
   d = fr.denominator
   if n % d == 0:
     f = "%i%s" % (n/d,x)
+  elif abs(n) > d and (len(x) == 0 or mixedvar):
+      sign = n/abs(n)
+      a = n * sign
+      (w,r) = divmod(a,d)
+      f = "%i %i%s/%i" % (w*sign,r,x,d)
   else:
-# put mixed number processor here
     f = "%i%s/%i" % (n,x,d)
   return f
 
@@ -289,7 +293,7 @@ def euclid_gcf(a,b):
     a,b = b,a%b
   return a
 
-def showaxpbeqcfrac(v,a1,a2,x,b):
+def showaxpbeqcfrac(v,a1,a2,x,b,mixedco=0):
   if a2 == 0: a2 = 7.00
   """
   if a1 < 0: a1 *= -1
@@ -300,7 +304,7 @@ def showaxpbeqcfrac(v,a1,a2,x,b):
   a2 += 0.00 if a2 > 0 else 7.00
   """
   b = int(b)
-  fr = fractionize(a1,x,a2)
+  fr = fractionize(a1,x,a2,mixedco)
   ax = "%s" % fr
   c = v*a1
   c += b*a2
@@ -324,11 +328,11 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
 def unittest(a = 0, b = 0, c = 0):
   el = {}
   er = []
-  for a in range(-5,7):
+  for a in range(-5,10):
     for b in range(-5,10):
 #      for c in range(-2,15):
 #        for d in ["x",""]:
-      e = fractionize(b/a,"",a,0)
+      e = fractionize(a,"xy",b)
       print e
       if "ERR" in e:
         er.append((a,b,c))

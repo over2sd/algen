@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.10"
+ver = "0.9.11"
 
 def main(argv):
   debugutest = 0
@@ -27,8 +27,10 @@ def main(argv):
   integers = 0
   keysep = 0
   key = []
+  mixedco = 0
+  fractions = 0
   try:
-    opts, args = getopt.getopt(argv, "ac:hkn:o:t:u:v:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter"])
+    opts, args = getopt.getopt(argv, "ac:fhkmn:o:t:u:v:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar"])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -73,6 +75,10 @@ def main(argv):
       integers = 1
     elif opt in ("-1","--allowone"):
       gcfone = 1
+    elif opt in ("-f","--fractco"):
+      fractions = 1
+    elif opt in ("-m","--mixedvar"):
+      mixedco = 1
     elif opt == "--test":
       debugutest = 1
     elif opt in ("-o","--outfile"):
@@ -136,7 +142,7 @@ def main(argv):
     elif probtype == '6': (o,a) = showalgex.showx3my3(part1,var,part2)
     elif probtype == '8': (o,a) = showalgex.showsimpineq(part1,part2,var,part3)
     elif probtype == '9': (o,a) = showalgex.showfracgcf(part1,part2,gcfone)
-    elif probtype == 'a': (o,a) = showalgex.showaxpbeqcfrac(part1,part2,part3,var,part4)
+    elif probtype == 'a': (o,a) = showalgex.showaxpbeqcfrac(part1,part2,part3,var,part4,mixedco)
     if keysep:
       key.append("%i) %s" % (i,a))
     else: o = "%s %s" % (o,a)
@@ -195,6 +201,8 @@ def usage():
   print "-u <string>, --unit <string>:		Text to put after measurements\n\t(e.g., %s)" % unit
   print "-a, --wholealt:		Do not allow decimal points in altitudes"
   print "-k, --keyafter:		Give key after all exercises (default after each)"
+  print "-f, --fractco:		Allow fractional coefficients"
+  print "-m, --mixedvar:		Convert improper fractional coefficents (ax/b) to mixed numbers (a bx/c) for added challenge"
 
 if __name__ == "__main__":
   print "\nLoading Algebra Exercise Generator v%s..." % (ver)
