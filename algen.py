@@ -8,14 +8,14 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.07"
+ver = "0.9.10"
 
 def main(argv):
   debugutest = 0
   cnt = 1
   mn = 1
   mx = 10
-  vlist = "abcdefghikmnpqrstuvwxyz"
+  vlist = "abcdefghjkmnpqrstuvwxyz"
   out = ""
   lines = []
   boring = [-1,0,1]

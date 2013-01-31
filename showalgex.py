@@ -5,6 +5,22 @@
 import re
 from math import (sqrt, fabs, fmod)
 from random import randint
+from fractions import Fraction
+from decimal import Decimal
+
+def fractionize(n,x,d):
+  if d == 0: return "div/0! undefined"
+  if n == 0: return "0"
+  f = ""
+  fr = Fraction (n,d)
+  n = fr.numerator
+  d = fr.denominator
+  if n % d == 0:
+    f = "%i%s" % (n/d,x)
+  else:
+# put mixed number processor here
+    f = "%i%s/%i" % (n,x,d)
+  return f
 
 def trimfloat(f,p=1):
   o = "%f" % f
@@ -274,24 +290,22 @@ def euclid_gcf(a,b):
   return a
 
 def showaxpbeqcfrac(v,a1,a2,x,b):
+  if a2 == 0: a2 = 7.00
+  """
   if a1 < 0: a1 *= -1
   if a2 < 0: a2 *= -1
   a1 = int(a1)
   a2 = int(a2)
   a1 += 0.00 if a1 > 0 else 2.00
   a2 += 0.00 if a2 > 0 else 7.00
+  """
   b = int(b)
+  fr = fractionize(a1,x,a2)
+  ax = "%s" % fr
   c = v*a1
-#  print c,
-  if c/a2 != int(c/a2):
-    r = fabs(fmod(c,a2))
-    w = (c - r)/a2 + b
-    if a2 < 0: w *= -1
-    c = "%i %i/%i" % (w,r,a2)
-  else:
-    c = c/a2+b
-    c = "%i" % c
-  o = "%i%c/%i+%i=%s" % (a1,x,a2,b,c)
+  c += b*a2
+  c = fractionize(c,"",a2)
+  o = "%s+%i=%s" % (ax,b,c)
   k = "(%c=%i)" % (x,v)
   return (cleaneq(o),k)
 
@@ -308,14 +322,28 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   return o
 
 def unittest(a = 0, b = 0, c = 0):
-  #print showfracgcf(a,b)
-  #if a == 0 and a == b and a == c:
-#  for a in range(1,10):
-#    for b in range(1,10):
-#        for c in range(1,10):
-#          for d in [0,1,2]:
+  el = {}
+  er = []
+  for a in range(-5,7):
+    for b in range(-5,10):
+#      for c in range(-2,15):
+#        for d in ["x",""]:
+      e = fractionize(b/a,"",a,0)
+      print e
+      if "ERR" in e:
+        er.append((a,b,c))
+        el[str(a)] = []
 #          print showaxpbeqcfrac(7,a,b,'x',c)
 #          print "Triangle: %i %i %i from given %i %i %i (%s)" % (e,f,g,a,b,c,i)
+  print "--------"
+  for x in er:
+    (a,b,c) = x
+    el[str(a)].append((b,c))
+  for x in sorted(el.keys()):
+    print "\n%s: " % (x),
+    for y in el[x]:
+      (b,c) = y
+      print "%s/%s" % (b,c),
   return
 
 if __name__ == "__main__":
