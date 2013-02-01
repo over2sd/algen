@@ -26,14 +26,15 @@ def fractionize(n,x,d,mixedvar=0):
     f = "%i%s/%i" % (n,x,d)
   return f
 
-def trimfloat(f,p=1):
+def trimfloat(f,p=0):
   o = "%f" % f
   mn = 3
   if '.' not in o: return o
-  else: mn = o.find('.') + 2
-  if mn < p + 2 or mn < 3: mn = p + 2
+  else: mn = o.find('.') + 1
+  mn += p
   while o[-1] == '0' and len(o) > mn: # len(0.0) = 3
     o = o[:-1]
+  if o[-1:] == ".": o = o[:-1]
   return o
 
 def trianglesanity(a,b,c):
@@ -81,14 +82,19 @@ def showaxpbeqc(v,a,x,b):
   return (cleaneq(o),cleaneq(k))
 
 #  print "		1: ax+b=cx+d"
-def showaxbeqcxd(v,a,x,b,c):
+def showaxbeqcxd(v,a,x,b,c,e=1):
+  if e == 0: e = 1
   if c == a: # prevent equation tautology (6x-3=6x-3)
     d = b
     b = a
+    if b == c:
+      c += 1
     a = d
-#    print "\nflipped a and b"
+# ax = fractionize(v*a,x,e,1)
   one = (v*a)+b
   d = one - (v*c)
+# cx = fractionize(v*c,x,e,1)
+# d = fractionize(d,"",e,1)
   o = ""
   if c < 0: # reverse order of second half if variable part is negative
     o = "%i%c+%i=%i+%i%c" % (a,x,b,d,c,x)
@@ -139,7 +145,7 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
   else:
     (m,b,n) = trianglesanity(m,b,n)
     if integers: (m,n,b,h,z) = makewholetri(m,b,n,t)
-    print h,
+#    print h,
     area = areafromsides(b,m,n)
     a = m
     c = n
@@ -147,18 +153,18 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
     p = a+b+c
     y = "%.3f%s" % (a,u)
     if a == int(a) or u == "px":
-      y = "%i%s" % (a,u)
+      y = "%i%s" % (a+0.5,u)
     elif u == "AU": # a bit of fun with enormous distances
       y = "%f%s" % (a,u)
-    bh = "%.3f%s" % (h,u)
+    bh = "%s%s" % (trimfloat(h),u)
     if h == int(h) or u == "px":
-      bh = "%i%s" % (h,u)
+      bh = "%i%s" % (h+0.5,u)
     elif u == "AU":
       bh = "%f%s" % (h,u)
-    w = "%i%s" % (b,u) if (b == int(b) or u == "px") else "%.3f%s" % (b,u)
+    w = "%i%s" % (b+0.5,u) if (b == int(b) or u == "px") else "%.3f%s" % (b,u)
     area = "%i%s" % (area,u) if u == "px" or area == int(area) else "%.3f%s" % (area,u)
-    p = "%i%s" % (p,u) if u == "px" or p == int(p) else "%.3f%s" % (p,u)
-    o += "A%s triangle has sides of %s, %s, and %i%s. The height of the triangle, measured with the second side (%s) as the base, is %s. Find the perimeter and area." % (z,y,w,c,u,w,bh)
+    p = "%i%s" % (p+0.5,u) if u == "px" or p == int(p) else "%.3f%s" % (p,u)
+    o += "A%s triangle has sides of %s, %i%s, and a base of %s. The height of the triangle is %s. Find the perimeter and area." % (z,y,c,u,w,bh)
     k = "(p=%s, a=%s^2)" % (p,area)
   return (cleaneq(o),cleaneq(k))
 
@@ -198,9 +204,9 @@ def showpara(b,s,d,u,integers=0): # base, side, diagonal, unit string, whole alt
   h = area/b
   if u == "px": u = "cm" # no pixels for this one
   if integers and h != int(h):
-    h = int(h+0.5)
+    h = int(h)
     area = h*b
-  h = "%i%u" % (h,u) if h == int(h) else "%.6f%s" % (h,u)
+  h = "%i%s" % (h,u) if h == int(h) else "%s%s" % (trimfloat(h),u)
   p = 2*b+2*s
   o = "A parallelogram has a height of %s, a base of %i%s, and an adjacent side of %i%s. Find the area and perimeter." % (h,b,u,s,u)
   k = "(A=%s%s^2, P=%i%s)" % (trimfloat(area),u,p,u)
@@ -328,12 +334,13 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
 def unittest(a = 0, b = 0, c = 0):
   el = {}
   er = []
-  for a in range(-5,10):
-    for b in range(-5,10):
+  for a in range(5,10):
+    for b in range(5,10):
 #      for c in range(-2,15):
 #        for d in ["x",""]:
-      e = fractionize(a,"xy",b)
-      print e
+#      e = fractionize(a,"xy",b)
+      e = trimfloat(a/float(b))
+      print "%s %f" % (e,a/float(b))
       if "ERR" in e:
         er.append((a,b,c))
         el[str(a)] = []
