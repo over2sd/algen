@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.11"
+ver = "0.9.12"
 
 def main(argv):
   debugutest = 0
@@ -115,7 +115,7 @@ def main(argv):
     var = vlist[randint(0,len(vlist)-1)]
     i += 1
     o = ""
-    if probtype == '0': (o,a) = showalgex.showaxpbeqc(part1,part2,var,part3)
+    if probtype == '0': (o,a) = showalgex.showaxpbeqcfrac(part1,part2,part3,var,part4,mixedco)
     elif probtype == '1': (o,a) = showalgex.showaxbeqcxd(part1,part2,var,part3,part4)
     elif probtype == '2': (o,a) = showalgex.showgcfax2pbxmc(part1,var,part2,part3,part4,part5)
     elif probtype in '37':
@@ -142,7 +142,7 @@ def main(argv):
     elif probtype == '6': (o,a) = showalgex.showx3my3(part1,var,part2)
     elif probtype == '8': (o,a) = showalgex.showsimpineq(part1,part2,var,part3)
     elif probtype == '9': (o,a) = showalgex.showfracgcf(part1,part2,gcfone)
-    elif probtype == 'a': (o,a) = showalgex.showaxpbeqcfrac(part1,part2,part3,var,part4,mixedco)
+    elif probtype == 'a': (o,a) = showalgex.showmd3d(part1,part2,part3,1)
     if keysep:
       key.append("%i) %s" % (i,a))
     else: o = "%s %s" % (o,a)
@@ -194,6 +194,7 @@ def usage():
   print "		7: area/perim of a triangle"
   print "		8: simple inequality (e.g. ax+b>c)"
   print "		9: Reducing/GCF of fractions"
+  print "		a: nnn*nn or x/nn=nnn"
   print "	Examples: \"-t 138af\" \"-t 2\""
   print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
   unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]

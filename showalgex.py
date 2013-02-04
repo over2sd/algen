@@ -319,6 +319,32 @@ def showaxpbeqcfrac(v,a1,a2,x,b,mixedco=0):
   k = "(%c=%i)" % (x,v)
   return (cleaneq(o),k)
 
+def showmd3d(a,b,c,absolute = 0):
+  d = -1; e = 1; f = 1; g = 1
+  if a < 0:
+    a *= d
+    e *= d
+  if b < 0:
+    b *= d
+    f *= d
+  if c < 0:
+    c *= d
+    g *= d
+  d = a * b + 10
+  a = b * c + 10
+  while a < 100: a *= randint(2,9)
+  while d >= 100: d /= randint(2,3)
+  b = a * d
+  c = randint(0,1)
+  if not absolute:
+    d *= (e*f)
+    a *= (f*g)
+    b *= (e*g)
+  o = "%i * %i =" % (a,d) if c else "%i / %i =" % (b,d)
+  a = "(%i)" % (b if c else a)
+  return (o,a)
+
+
 def saywordprob(t,x,v,a,b,c='',d='',e=''):
   o = ""
   #if t == '0':
@@ -336,11 +362,11 @@ def unittest(a = 0, b = 0, c = 0):
   er = []
   for a in range(5,10):
     for b in range(5,10):
-#      for c in range(-2,15):
+      for c in range(-2,15):
 #        for d in ["x",""]:
 #      e = fractionize(a,"xy",b)
-      e = trimfloat(a/float(b))
-      print "%s %f" % (e,a/float(b))
+        (e,f) = multdiv3d(a,b,c)
+        print "%s %s" % (e,f)
       if "ERR" in e:
         er.append((a,b,c))
         el[str(a)] = []
