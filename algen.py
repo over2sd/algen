@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.12"
+ver = "0.9.13"
 
 def main(argv):
   debugutest = 0
@@ -113,13 +113,13 @@ def main(argv):
     while part3 in boring: part3 = randint(mn,mx) # b
     while part4 in boring: part4 = randint(mn,mx) # c/y
     while part5 in boring: part5 = randint(mn,mx) # d
-    while part6 in boring: part6 = randint(mn,mx) # denominator
+    while part6 in boring or part6 == part2: part6 = randint(mn,mx) # denominator
     var = vlist[randint(0,len(vlist)-1)]
     i += 1
     o = ""
-    denom = part6 if True else 1
+    denom = part6 if fractions else 1
     if probtype == '0': (o,a) = showalgex.showaxpbeqc(part1,part2,var,part3,denom,mixedco)
-    elif probtype == '1': (o,a) = showalgex.showaxbeqcxd(part1,part2,var,part3,part4,mixedco,denom)
+    elif probtype == '1': (o,a) = showalgex.showaxbeqcxd(part1,part2,var,part3,denom,mixedco)
     elif probtype == '2': (o,a) = showalgex.showgcfax2pbxmc(part1,var,part2,part3,part4,part5)
     elif probtype in '37':
       if u >= 0:
@@ -143,7 +143,7 @@ def main(argv):
         (o,a) = showalgex.showpara(part1,part2,part3,unit,integers)
     elif probtype == '5': (o,a) = showalgex.showabxmc(part1,part2,part3,var,part4)
     elif probtype == '6': (o,a) = showalgex.showx3my3(part1,var,part2)
-    elif probtype == '8': (o,a) = showalgex.showsimpineq(part1,part2,var,part3)
+    elif probtype == '8': (o,a) = showalgex.showsimpineq(part1,part2,var,part3,denom,mixedco)
     elif probtype == '9': (o,a) = showalgex.showfracgcf(part1,part2,gcfone)
     elif probtype == 'a': (o,a) = showalgex.showmd3d(part1,part2,part3,1)
     if keysep:

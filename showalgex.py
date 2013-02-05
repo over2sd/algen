@@ -73,33 +73,27 @@ def cleaneq(s):
   s = re.sub('\+-','-',s)
   s = re.sub('--','+',s)
   return s
-'''
-#  print "		0: ax+b=c"
-def showaxpbeqc(v,a,x,b):
-  c = (v*a)+b
-  o = "%i%c+%i=%i" % (a,x,b,c)
-  k = "(%c=%i)" % (x,v)
-  return (cleaneq(o),cleaneq(k))
-'''
 #  print "		1: ax+b=cx+d"
-def showaxbeqcxd(v,a,x,b,c,mixedco=0,e=1):
-  if e == 0: e = 1
+def showaxbeqcxd(v,a,x,c,e=1,mixedco=0):
+  if e == 0: e = a+2
   if c == a: # prevent equation tautology (6x-3=6x-3)
-    d = b
-    b = a
-    if b == c:
-      c += 1
-    a = d
-# ax = fractionize(v*a,x,e,1)
-  one = (v*a)+b
+    c += 1
+  ax = fractionize(a,x,e,mixedco)
+  cx = fractionize(c,x,e,mixedco)
+  one = a*c+e
+  b = one - (v*a)
   d = one - (v*c)
-# cx = fractionize(v*c,x,e,1)
-# d = fractionize(d,"",e,1)
+  if e == 1 and b > 10 and d > 10: # prevent outrageous numbers when no fractions present
+    f = d//randint(2,3) # by subtracting half or a third of d
+    d -= f
+    b -= f
+  b = fractionize(b,"",e,1)
+  d = fractionize(d,"",e,1)
   o = ""
   if c < 0: # reverse order of second half if variable part is negative
-    o = "%i%c+%i=%i+%i%c" % (a,x,b,d,c,x)
+    o = "%s+%s=%s+%s" % (ax,b,d,cx)
   else:
-    o = "%i%c+%i=%i%c+%i" % (a,x,b,c,x,d)
+    o = "%s+%s=%s+%s" % (ax,b,cx,d)
   k = "(%c=%i)" %  (x,v)
   return (cleaneq(o),cleaneq(k))
 
@@ -138,7 +132,7 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
     c = (m*m)+(n*n)
     area = 0.5*(a*b)
     p = a+b+c
-    h = ((a*a)+(b*b))/c
+    #h = fractionize((a*a)+(b*b),"",c,1)
     #  print "Given %i and %i: a=%i b=%i c=%i=%i" % (m,n,a,b,c,h)
     o += "A right triangle has legs x %s and %i%s and a hypotenuse of %i%s. Find the area and perimeter." % (u,b,u,c,u)
     k = "(x=%i%s, a=%s%s^2, p=%s%s)" % (a,u,trimfloat(area),u,trimfloat(p),u)
@@ -149,14 +143,14 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
     area = areafromsides(b,m,n)
     a = m
     c = n
-    h = 2*area/b
+    h = 2*area/float(b)
     p = a+b+c
     y = "%.3f%s" % (a,u)
     if a == int(a) or u == "px":
       y = "%i%s" % (a+0.5,u)
     elif u == "AU": # a bit of fun with enormous distances
       y = "%f%s" % (a,u)
-    bh = "%s%s" % (trimfloat(h),u)
+    bh = "%s%s" % (fractionize(2*area,"",b,1),u)
     if h == int(h) or u == "px":
       bh = "%i%s" % (h+0.5,u)
     elif u == "AU":
@@ -201,7 +195,7 @@ def makewholetri(a,b,c,bigangle):
 def showpara(b,s,d,u,integers=0): # base, side, diagonal, unit string, whole altitude? (opt)
   (b,s,d) = trianglesanity(b,s,d)
   area = 2*(areafromsides(b,s,d))
-  h = area/b
+  h = area//b
   if u == "px": u = "cm" # no pixels for this one
   if integers and h != int(h):
     h = int(h)
@@ -232,18 +226,23 @@ def showx3my3(v,x,a):
   k = "(%c-%i)(%c^2+%i%c+%i) (f(%i)=%i)" % (x,a,x,a,x,b,v,c)
   return (cleaneq(o),cleaneq(k))
 
-def showsimpineq(v,a,x,b):
+def showsimpineq(v,a,x,b,den=1,mixedco=0):
+  if den == 0: den = 2
   i = '='
   if (a == 0): a += 1
-  c = (v*a)+b
+  ax = fractionize(a,x,den,mixedco)
+  c = (v*a)+(b*den)
+  cs = fractionize(c,"",den,1)
   d = randint(0,3)
   ilist = ["<","<=",">",">="]
   i = ilist[d]
   e = 0
-  if (a < 0):
+  nsign = a / fabs(a)
+  dsign = den / fabs(den)
+  if (nsign != dsign):
     e = 2
   i2 = ilist[(d+e) % 4]
-  o = "%i%c+%i%s%i" % (a,x,b,i2,c)
+  o = "%s+%i%s%s" % (ax,b,i2,cs)
   k = "(%c%s%i)" % (x,i,v)
   return (cleaneq(o),k)
 
@@ -300,15 +299,7 @@ def euclid_gcf(a,b):
   return a
 
 def showaxpbeqc(v,a1,x,b,a2,mixedco=0):
-  if a2 == 0: a2 = 7.00
-  """
-  if a1 < 0: a1 *= -1
-  if a2 < 0: a2 *= -1
-  a1 = int(a1)
-  a2 = int(a2)
-  a1 += 0.00 if a1 > 0 else 2.00
-  a2 += 0.00 if a2 > 0 else 7.00
-  """
+  if a2 == 0: a2 = 7.00 # No div/0
   b = int(b)
   fr = fractionize(a1,x,a2,mixedco)
   ax = "%s" % fr
