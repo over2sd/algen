@@ -150,7 +150,7 @@ def showtriangle(u,m,n,b=0,integers=0,t=0):
       y = "%i%s" % (a+0.5,u)
     elif u == "AU": # a bit of fun with enormous distances
       y = "%f%s" % (a,u)
-    bh = "%s%s" % (fractionize(2*area,"",b,1),u)
+    bh = "%s%s" % (fractionize("%f" % h,"",1,1),u)
     if h == int(h) or u == "px":
       bh = "%i%s" % (h+0.5,u)
     elif u == "AU":
