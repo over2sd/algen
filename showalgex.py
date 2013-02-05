@@ -73,16 +73,16 @@ def cleaneq(s):
   s = re.sub('\+-','-',s)
   s = re.sub('--','+',s)
   return s
-
+'''
 #  print "		0: ax+b=c"
 def showaxpbeqc(v,a,x,b):
   c = (v*a)+b
   o = "%i%c+%i=%i" % (a,x,b,c)
   k = "(%c=%i)" % (x,v)
   return (cleaneq(o),cleaneq(k))
-
+'''
 #  print "		1: ax+b=cx+d"
-def showaxbeqcxd(v,a,x,b,c,e=1):
+def showaxbeqcxd(v,a,x,b,c,mixedco=0,e=1):
   if e == 0: e = 1
   if c == a: # prevent equation tautology (6x-3=6x-3)
     d = b
@@ -299,7 +299,7 @@ def euclid_gcf(a,b):
     a,b = b,a%b
   return a
 
-def showaxpbeqcfrac(v,a1,a2,x,b,mixedco=0):
+def showaxpbeqc(v,a1,x,b,a2,mixedco=0):
   if a2 == 0: a2 = 7.00
   """
   if a1 < 0: a1 *= -1
@@ -364,23 +364,8 @@ def unittest(a = 0, b = 0, c = 0):
     for b in range(5,10):
       for c in range(-2,15):
 #        for d in ["x",""]:
-#      e = fractionize(a,"xy",b)
-        (e,f) = multdiv3d(a,b,c)
-        print "%s %s" % (e,f)
-      if "ERR" in e:
-        er.append((a,b,c))
-        el[str(a)] = []
-#          print showaxpbeqcfrac(7,a,b,'x',c)
-#          print "Triangle: %i %i %i from given %i %i %i (%s)" % (e,f,g,a,b,c,i)
-  print "--------"
-  for x in er:
-    (a,b,c) = x
-    el[str(a)].append((b,c))
-  for x in sorted(el.keys()):
-    print "\n%s: " % (x),
-    for y in el[x]:
-      (b,c) = y
-      print "%s/%s" % (b,c),
+        (o,k) = showaxbeqcxd(a,b,"x",7,c,0,3)
+        print "%s %s" % (o,k)
   return
 
 if __name__ == "__main__":

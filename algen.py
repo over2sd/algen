@@ -107,16 +107,19 @@ def main(argv):
     part3 = randint(mn,mx) # b
     part4 = randint(mn,mx) # c/y
     part5 = randint(mn,mx) # d
+    part6 = randint(mn,mx) # denominator
     while part1 in boring: part1 = randint(mn,mx) # x
     while part2 in boring: part2 = randint(mn,mx) # a
     while part3 in boring: part3 = randint(mn,mx) # b
     while part4 in boring: part4 = randint(mn,mx) # c/y
     while part5 in boring: part5 = randint(mn,mx) # d
+    while part6 in boring: part6 = randint(mn,mx) # denominator
     var = vlist[randint(0,len(vlist)-1)]
     i += 1
     o = ""
-    if probtype == '0': (o,a) = showalgex.showaxpbeqcfrac(part1,part2,part3,var,part4,mixedco)
-    elif probtype == '1': (o,a) = showalgex.showaxbeqcxd(part1,part2,var,part3,part4)
+    denom = part6 if True else 1
+    if probtype == '0': (o,a) = showalgex.showaxpbeqc(part1,part2,var,part3,denom,mixedco)
+    elif probtype == '1': (o,a) = showalgex.showaxbeqcxd(part1,part2,var,part3,part4,mixedco,denom)
     elif probtype == '2': (o,a) = showalgex.showgcfax2pbxmc(part1,var,part2,part3,part4,part5)
     elif probtype in '37':
       if u >= 0:
