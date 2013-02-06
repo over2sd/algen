@@ -335,6 +335,53 @@ def showmd3d(a,b,c,absolute = 0):
   a = "(%i)" % (b if c else a)
   return (o,a)
 
+rateunits = []
+ratestring = []
+def initunits():
+  global rateunits
+  dist = ["nm","mm","cm","m","km","in","ft","yd","mi"]
+  rateunits.append(dist)
+  time = ["ms","s","min","hr","days","weeks","months","years"]
+  rateunits.append(time)
+  vol = ["fl oz","cc","cp","qt","pt","gal"]
+  rateunits.append(vol)
+  mass = ["oz","lb","t","mg","cg","g","kg"]
+  rateunits.append(mass)
+  # Replace these with 12 full word problems like:
+  #  "It takes %i %s to mine %i %s of coal. How long does it take to mine each %s?"
+  preface = ["An object travels","It takes","A cylinder holding","A container carrying"]
+  dist = ["ERR","every","rise for every","for every added"]
+  ratestring.append(dist)
+  time = ["to go","ERR","to produce","to gather"]
+  ratestring.append(time)
+  vol = ["covers","can be emptied in","ERR","weighs"]
+  ratestring.append(vol)
+  mass = ["of fuel can move your rocket","is filled every","displaces","ERR"]
+  ratestring.append(mass)
+
+
+def showunitrate(v,a,b,c,d):
+  (v,a,b,c,d) = (abs(v),abs(a),abs(b),abs(c),abs(d))
+  if a in [0,1]: a += randint(3,7)
+  if b in [0,1]: b += randint(4,16)
+  if a == b: b *= a
+  if not len(rateunits):
+    initunits()
+  e = a%len(rateunits)
+  c %= len(rateunits[e])
+  f = b%len(rateunits)
+  if f == e:
+    f += e
+    f %= len(rateunits)
+
+  d %= len(rateunits[f])
+  g = rateunits[e][c]
+  h = rateunits[f][d]
+  i = b*a
+  k = "every" # test here?
+  print "%i %s %s %i %s" % (i,g,k,b,h)
+
+
 
 def saywordprob(t,x,v,a,b,c='',d='',e=''):
   o = ""
@@ -349,6 +396,10 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   return o
 
 def unittest(a = 0, b = 0, c = 0):
+  global rateunits
+  showunitrate(a,b,c,4,5)
+  print a
+  '''
   el = {}
   er = []
   for a in range(5,10):
@@ -357,6 +408,7 @@ def unittest(a = 0, b = 0, c = 0):
 #        for d in ["x",""]:
         (o,k) = showaxbeqcxd(a,b,"x",7,c,0,3)
         print "%s %s" % (o,k)
+  '''
   return
 
 if __name__ == "__main__":
