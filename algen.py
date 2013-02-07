@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.13"
+ver = "0.9.14"
 
 def main(argv):
   debugutest = 0
@@ -20,7 +20,7 @@ def main(argv):
   lines = []
   boring = [-1,0,1]
   gcfone = 0
-  tlist = "0123456789a"
+  tlist = "0123456789ab"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
   unit = "spans"
@@ -29,8 +29,9 @@ def main(argv):
   key = []
   mixedco = 0
   fractions = 0
+  wordy = 0
   try:
-    opts, args = getopt.getopt(argv, "ac:fhkmn:o:t:u:v:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar"])
+    opts, args = getopt.getopt(argv, "ac:fhkmn:o:t:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy"])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -59,6 +60,11 @@ def main(argv):
     elif opt in ("-n","--min"):
       if isnum(arg):
         mn = int(arg)
+      else:
+        print "Argument is not a valid number. Ignoring %s %s.\n" % (opt,arg)
+    elif opt in ("-w","--wordy"):
+      if isnum(arg):
+        wordy = int(arg)
       else:
         print "Argument is not a valid number. Ignoring %s %s.\n" % (opt,arg)
     elif opt in ("-v","--vars"):
@@ -146,6 +152,7 @@ def main(argv):
     elif probtype == '8': (o,a) = showalgex.showsimpineq(part1,part2,var,part3,denom,mixedco)
     elif probtype == '9': (o,a) = showalgex.showfracgcf(part1,part2,gcfone)
     elif probtype == 'a': (o,a) = showalgex.showmd3d(part1,part2,part3,1)
+    elif probtype == 'b': (o,a) = showalgex.showunitrate(part1,part2,part3,part4,part5,wordy)
     if keysep:
       key.append("%i) %s" % (i,a))
     else: o = "%s %s" % (o,a)
@@ -207,6 +214,7 @@ def usage():
   print "-k, --keyafter:		Give key after all exercises (default after each)"
   print "-f, --fractco:		Allow fractional coefficients"
   print "-m, --mixedvar:		Convert improper fractional coefficents (ax/b) to mixed numbers (a bx/c) for added challenge"
+  print "-w <#>, --wordy <#>:		Make word problems, where possible. (-1:no; 0:random(default); 1:yes)"
 
 if __name__ == "__main__":
   print "\nLoading Algebra Exercise Generator v%s..." % (ver)

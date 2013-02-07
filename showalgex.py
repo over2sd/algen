@@ -341,26 +341,23 @@ def initunits():
   global rateunits
   dist = ["nm","mm","cm","m","km","in","ft","yd","mi"]
   rateunits.append(dist)
-  time = ["ms","s","min","hr","days","weeks","months","years"]
+  time = ["ms","s"," min","hr"," days"," weeks"," months"," years"]
   rateunits.append(time)
   vol = ["fl oz","cc","cp","qt","pt","gal"]
   rateunits.append(vol)
   mass = ["oz","lb","t","mg","cg","g","kg"]
   rateunits.append(mass)
-  # Replace these with 12 full word problems like:
-  #  "It takes %i %s to mine %i %s of coal. How long does it take to mine each %s?"
-  preface = ["An object travels","It takes","A cylinder holding","A container carrying"]
-  dist = ["ERR","every","rise for every","for every added"]
+  dist = ["ERR","A remote-control car travels %i%s every %i%s. How far does it go in %i%s?","A float rises %i%s for every %i%s added to the cylinder. How far does it rise when %i%s is added?","A spring bends %i%s for every %i%s added to a basket hung from it. How far does it bend when %i%s is added?"]
   ratestring.append(dist)
-  time = ["to go","ERR","to produce","to gather"]
+  time = ["It takes %i%s for a model to go %i%s. How long does it take to go %i%s?","ERR","It takes %i%s for a well to pump %i%s of water. How long does it take to pump %i%s?","A group of miners takes %i%s to gather %i%s of coal. How often do they gather %i%s?"]
   ratestring.append(time)
-  vol = ["covers","can be emptied in","ERR","weighs"]
+  vol = ["%i%s of Marvel Paint covers %i%s. How much paint is needed to cover %i%s?","If %i%s of fluid can be emptied from its cylinder in %i%s. How much fluid can be emptied in %i%s?","ERR","%i%s of Wonder Fluid weighs %i%s. How much does %i%s weigh?"]
   ratestring.append(vol)
-  mass = ["of fuel can move your rocket","is filled every","displaces","ERR"]
+  mass = ["If %i%s of solid fuel lifts a rocket %i%s, how much will lift it %i%s?","If a conveyer can move %i%s of ore every %i%s, how much does it move in %i%s?","If a block of material massing %i%s displaces %i%s of Wonder Fluid, how much does a block mass that displaces %i%s?","ERR"]
   ratestring.append(mass)
 
 
-def showunitrate(v,a,b,c,d):
+def showunitrate(v,a,b,c,d,word=0):
   (v,a,b,c,d) = (abs(v),abs(a),abs(b),abs(c),abs(d))
   if a in [0,1]: a += randint(3,7)
   if b in [0,1]: b += randint(4,16)
@@ -371,16 +368,25 @@ def showunitrate(v,a,b,c,d):
   c %= len(rateunits[e])
   f = b%len(rateunits)
   if f == e:
-    f += e
+    f += e if e > 0 else 1
     f %= len(rateunits)
 
   d %= len(rateunits[f])
   g = rateunits[e][c]
   h = rateunits[f][d]
-  i = b*a
-  k = "every" # test here?
-  print "%i %s %s %i %s" % (i,g,k,b,h)
-
+  i = b*v
+  m = h[:-1] if h in ["days","weeks","months","years"] else h
+  if m[0] == " ": m = m[1:]
+  k = "%i%s:%i%s" % (i,g,b,h)
+  key = "(%i%s/%s)" % (v,g,m)
+  if word==0: word = randint(0,1)
+  if word>0:
+    try:
+      k = ratestring[e][f] % (i,g,b,h,a,h) # test here?
+    except TypeError as n:
+      print "ERR: %s %s" % (n,ratestring[e][f])
+    key = "(%i%s)" % (v*a,g)
+  return (k,key)
 
 
 def saywordprob(t,x,v,a,b,c='',d='',e=''):
@@ -396,9 +402,9 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   return o
 
 def unittest(a = 0, b = 0, c = 0):
-  global rateunits
-  showunitrate(a,b,c,4,5)
-  print a
+  for a in range(1,10):
+    (k,key) = showunitrate(a,a,b,c,5,0)
+    print "%s %s" % (k,key)
   '''
   el = {}
   er = []
