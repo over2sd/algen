@@ -401,11 +401,53 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   txt4 = ["What is the cost for one?","How much is the weekly allowance?"]
   return o
 
+def showtabledrill(count,depth=10,var='',pare=True,randomize=True,sepkey=False):
+  if depth in [0,1] or count == 0: return
+  if depth < 1: depth *= -1
+  if count < 1: count *= -1
+  while len(var) > 1: var = var[0]
+  keys = []
+  order=[]
+  grid=[]
+  for x in range(depth):
+    for y in range(depth):
+      if not pare or (y+1,x+1) not in grid:
+        grid.append((x+1,y+1))
+  i = 0
+  if count > len(grid): print "Generating %i duplicates to match required exercise count." % (count-len(grid))
+  while count > len(grid): # Duplication fills out grid to meet demand for too many exercises.
+    a = (grid[i][1],grid[i][0])
+    grid.append(a)
+    i += 1
+  if randomize:
+    while len(order) < count and len(grid) > 0:
+      i = randint(0,len(grid)-1)
+      order.append(grid[i])
+      del grid[i]
+  else:
+    order = grid[:count-1] if count > 1 else grid[0]
+  print "Times Table Drill (depth %i):" % depth
+  myvar = ""
+  if len(var) > 0: myvar = "%s=" % (var)
+  for i in range(count):
+    (a,b) = (order[i][0],order[i][1]) if count > 1 else (order[0],order[1])
+    product = ""
+    number = ""
+    if sepkey:
+      keys.append("%i: %s%i" % (i+1,myvar,a*b))
+      number = "%i: " % (i+1)
+    else:
+      product = " (%i)" % (a*b)
+    print "%s%i * %i = %s%s" % (number,a,b,var,product)
+  print ""
+  for k in keys: print k
+
 def unittest(a = 0, b = 0, c = 0):
+  showtabledrill(a,b,'x')
+  '''
   for a in range(1,10):
     (k,key) = showunitrate(a,a,b,c,5,0)
     print "%s %s" % (k,key)
-  '''
   el = {}
   er = []
   for a in range(5,10):

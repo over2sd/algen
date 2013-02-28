@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.14"
+ver = "0.9.16"
 
 def main(argv):
   debugutest = 0
@@ -30,8 +30,12 @@ def main(argv):
   mixedco = 0
   fractions = 0
   wordy = 0
+  nodupe = 0
+  rord = 0
+  drill = 0
+  var = ''
   try:
-    opts, args = getopt.getopt(argv, "ac:fhkmn:o:t:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy"])
+    opts, args = getopt.getopt(argv, "ac:fhkmn:o:rt:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy","drill","rand"])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -81,12 +85,17 @@ def main(argv):
       integers = 1
     elif opt in ("-1","--allowone"):
       gcfone = 1
+      nodupe = 1
     elif opt in ("-f","--fractco"):
       fractions = 1
     elif opt in ("-m","--mixedvar"):
       mixedco = 1
     elif opt == "--test":
       debugutest = 1
+    elif opt in ("-r","--rand"):
+      rord = 1
+    elif opt in ("d","--drill"):
+      drill = 1
     elif opt in ("-o","--outfile"):
       out = arg
       try:
@@ -107,6 +116,13 @@ def main(argv):
     exlist += tlist # add on exercise types from list of desired types
   exlist = exlist[:cnt] # trim to desired length
   i = 0
+  if drill:
+    drillvar = ''
+    if len(var) == 1: drillvar = var
+    if cnt == 0: cnt = 1
+    showalgex.showtabledrill(cnt,mx,drillvar,nodupe,rord,keysep)
+    sys.exit(0)
+
   for probtype in exlist:
     part1 = randint(mn,mx) # x
     part2 = randint(mn,mx) # a
@@ -189,10 +205,20 @@ def usage():
   print "Usage: %s [option value]" % sys.argv[0]
   print "-c <#>, --count <#>:		How many exercises to generate"
   print "-n <#>, --min <#>:		Minimum value for variable, coefficients,\n\tand constants"
-  print "-x <#>, --max <#>:		Maximum value for variable, coefficients,\n\tand constants"
+  print "-x <#>, --max <#>:		Maximum value for variable, coefficients,\n\tand constants; depth of times table"
   print "-v <char|string>, --vars <char|string>:		String of lowercase letters\n\tthat can be used for variables"
   print "	Examples: \"-v x\", \"-v abc\""
   print "-o <file>, --outfile <file>:		A filename where the program will\n\tappend its results for easy copy/paste"
+  print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
+  print "-1, --allowone:		Allow GCF of 1 (irreducible fraction); in drill modes, avoid duplicates"
+  unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]
+  unit = unit[randint(0,len(unit)-1)]
+  print "-u <string>, --unit <string>:		Text to put after measurements\n\t(e.g., %s)" % unit
+  print "-a, --wholealt:		Do not allow decimal points in altitudes"
+  print "-k, --keyafter:		Give key after all exercises (default after each)"
+  print "-f, --fractco:		Allow fractional coefficients"
+  print "-m, --mixedvar:		Convert improper fractional coefficents (ax/b) to mixed numbers (a bx/c) for added challenge"
+  print "-w <#>, --wordy <#>:		Make word problems, where possible. (-1:no; 0:random(default); 1:yes)"
   print "-t <types>, --types <types>:		Type(s) of exercises to generate:"
   print "		0: ax+b=c"
   print "		1: ax+b=cx+d"
@@ -205,16 +231,10 @@ def usage():
   print "		8: simple inequality (e.g. ax+b>c)"
   print "		9: Reducing/GCF of fractions"
   print "		a: nnn*nn or x/nn=nnn"
+  print "		b: Unit rate exercises"
   print "	Examples: \"-t 138af\" \"-t 2\""
-  print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
-  unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]
-  unit = unit[randint(0,len(unit)-1)]
-  print "-u <string>, --unit <string>:		Text to put after measurements\n\t(e.g., %s)" % unit
-  print "-a, --wholealt:		Do not allow decimal points in altitudes"
-  print "-k, --keyafter:		Give key after all exercises (default after each)"
-  print "-f, --fractco:		Allow fractional coefficients"
-  print "-m, --mixedvar:		Convert improper fractional coefficents (ax/b) to mixed numbers (a bx/c) for added challenge"
-  print "-w <#>, --wordy <#>:		Make word problems, where possible. (-1:no; 0:random(default); 1:yes)"
+  print "-d --drill:	Times Table Drill (with -cxkv1r)"
+  print "-r --rand:	In drill modes, randomize exercise order"
 
 if __name__ == "__main__":
   print "\nLoading Algebra Exercise Generator v%s..." % (ver)
