@@ -413,12 +413,14 @@ def showtabledrill(count,depth=10,var='',pare=True,randomize=True,sepkey=False):
     for y in range(depth):
       if not pare or (y+1,x+1) not in grid:
         grid.append((x+1,y+1))
-  i = 0
+  i = len(grid) - 1
+  safe = 0
   if count > len(grid): print "Generating %i duplicates to match required exercise count." % (count-len(grid))
-  while count > len(grid): # Duplication fills out grid to meet demand for too many exercises.
+  while safe < 100 and count > len(grid): # Duplication fills out grid to meet demand for too many exercises.
     a = (grid[i][1],grid[i][0])
-    grid.append(a)
-    i += 1
+    if a[0] != a[1]: grid.append(a)
+    else: safe += 1 # prevents infinite loop
+    i = i - 1 if i > 1 else len(grid) - 1
   if randomize:
     while len(order) < count and len(grid) > 0:
       i = randint(0,len(grid)-1)
@@ -439,7 +441,7 @@ def showtabledrill(count,depth=10,var='',pare=True,randomize=True,sepkey=False):
     else:
       product = " (%i)" % (a*b)
     print "%s%i * %i = %s%s" % (number,a,b,var,product)
-  print ""
+  print "" if len(keys) == 0 else "Key:"
   for k in keys: print k
 
 def unittest(a = 0, b = 0, c = 0):
