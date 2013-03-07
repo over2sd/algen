@@ -8,14 +8,14 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.16"
+ver = "0.9.17"
 
 def main(argv):
   debugutest = 0
   cnt = 1
   mn = 1
   mx = 10
-  vlist = "abcdefghjkmnpqrstuvwxyz"
+  vlist = "abcdefghjkmnprstuvwxyz"
   out = ""
   lines = []
   boring = [-1,0,1]
@@ -35,7 +35,7 @@ def main(argv):
   drill = 0
   var = ''
   try:
-    opts, args = getopt.getopt(argv, "ac:fhkmn:o:rt:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy","drill","rand"])
+    opts, args = getopt.getopt(argv, "ac:d:fhkmn:o:rt:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy","drill=","rand"])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -94,8 +94,9 @@ def main(argv):
       debugutest = 1
     elif opt in ("-r","--rand"):
       rord = 1
-    elif opt in ("d","--drill"):
+    elif opt in ("-d","--drill"):
       drill = 1
+      tlist = arg if len(arg) == 1 else 0
     elif opt in ("-o","--outfile"):
       out = arg
       try:
@@ -111,17 +112,19 @@ def main(argv):
       showalgex.unittest(a,b,c)
     sys.exit(0)
   if mx <= 1 and mn >=-1: boring = [] # only you can prevent infinite loops
+  i = 0
+  if drill:
+    drillvar = ''
+    if not isnum(tlist): tlist = tlist[0]
+    if int(tlist) in [2,3,4]:
+      drillvar = var if len(var) > 0 else vlist
+    if cnt < 1: cnt = 1
+    showalgex.showtabledrill(cnt,mx,drillvar,nodupe,rord,keysep,tlist)
+    sys.exit(0)
   exlist = []
   while len(exlist) < cnt: # until we have at least as many listed types as we want exercises...
     exlist += tlist # add on exercise types from list of desired types
   exlist = exlist[:cnt] # trim to desired length
-  i = 0
-  if drill:
-    drillvar = ''
-    if len(var) == 1: drillvar = var
-    if cnt == 0: cnt = 1
-    showalgex.showtabledrill(cnt,mx,drillvar,nodupe,rord,keysep)
-    sys.exit(0)
 
   for probtype in exlist:
     part1 = randint(mn,mx) # x
@@ -219,6 +222,13 @@ def usage():
   print "-f, --fractco:		Allow fractional coefficients"
   print "-m, --mixedvar:		Convert improper fractional coefficents (ax/b) to mixed numbers (a bx/c) for added challenge"
   print "-w <#>, --wordy <#>:		Make word problems, where possible. (-1:no; 0:random(default); 1:yes)"
+  print "-r --rand:	In drill modes, randomize exercise order"
+  print "-d <type>, --drill <type>:	Times Table Drill (with -cxkv1r)"
+  print "		0 (default): multiplication (a*b= )"
+  print "		1: division (ab/a= )"
+  print "		2: variable multiplication (ab/x=a)"
+  print "		3: variable division (ax=ab)"
+  print "		4: mixed drills"
   print "-t <types>, --types <types>:		Type(s) of exercises to generate:"
   print "		0: ax+b=c"
   print "		1: ax+b=cx+d"
@@ -233,8 +243,6 @@ def usage():
   print "		a: nnn*nn or x/nn=nnn"
   print "		b: Unit rate exercises"
   print "	Examples: \"-t 138af\" \"-t 2\""
-  print "-d --drill:	Times Table Drill (with -cxkv1r)"
-  print "-r --rand:	In drill modes, randomize exercise order"
 
 if __name__ == "__main__":
   print "\nLoading Algebra Exercise Generator v%s..." % (ver)

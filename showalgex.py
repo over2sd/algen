@@ -401,11 +401,15 @@ def saywordprob(t,x,v,a,b,c='',d='',e=''):
   txt4 = ["What is the cost for one?","How much is the weekly allowance?"]
   return o
 
-def showtabledrill(count,depth=10,var='',pare=True,randomize=True,sepkey=False):
+def showtabledrill(count,depth=10,var='',pare=True,randomize=True,sepkey=False,extype=0):
   if depth in [0,1] or count == 0: return
+  mix = False
   if depth < 1: depth *= -1
   if count < 1: count *= -1
+  var = var[randint(0,len(var)-1)] if len(var) > 0 else ''
   while len(var) > 1: var = var[0]
+  extype = int(extype)
+  if extype == 4: mix = True
   keys = []
   order=[]
   grid=[]
@@ -427,20 +431,57 @@ def showtabledrill(count,depth=10,var='',pare=True,randomize=True,sepkey=False):
       order.append(grid[i])
       del grid[i]
   else:
-    order = grid[:count-1] if count > 1 else grid[0]
+    order = grid[:count] if count > 1 else grid[0]
   print "Times Table Drill (depth %i):" % depth
   myvar = ""
   if len(var) > 0: myvar = "%s=" % (var)
   for i in range(count):
-    (a,b) = (order[i][0],order[i][1]) if count > 1 else (order[0],order[1])
-    product = ""
-    number = ""
-    if sepkey:
-      keys.append("%i: %s%i" % (i+1,myvar,a*b))
-      number = "%i: " % (i+1)
-    else:
-      product = " (%i)" % (a*b)
-    print "%s%i * %i = %s%s" % (number,a,b,var,product)
+    if mix: extype = randint(0,3)
+    try:
+      (a,b) = (order[i][0],order[i][1]) if count > 1 else (order[0],order[1])
+    except IndexError as e:
+      print "Error %s with index %i/%i" % (e,i,len(order)-1)
+      return
+    if extype in [1,3]:
+      number = ""
+      if extype == 1:
+        if len(myvar) == 0: var = ''
+        quotient = ""
+        if sepkey:
+          keys.append("%i: %s%i" % (i+1,var,b))
+          number = "%i: " % (i+1)
+        else:
+          quotient = " (%i)" % (b)
+        print "%s%i / %i = %s%s" % (number,a*b,a,var,quotient)
+      else:
+        if len(var) == 0: var = 'x'
+        factor = ""
+        if sepkey:
+          keys.append("%i: %s=%i" % (i+1,var,b))
+          number = "%i: " % (i+1)
+        else:
+          factor = " (%i)" % (b)
+        print "%s%i%s = %i%s" % (number,a,var,a*b,factor)
+    else: # extype 0,2
+      number = ""
+      if extype == 2:
+        if len(var) == 0: var = 'x'
+        factor = ""
+        if sepkey:
+          keys.append("%i: %s=%i" % (i+1,var,b))
+          number = "%i: " % (i+1)
+        else:
+          factor = " (%i)" % (b)
+        print "%s%i / %s = %i%s" % (number,a*b,var,a,factor)
+      else:
+        if len(myvar) == 0: var = ''
+        product = ""
+        if sepkey:
+          keys.append("%i: %s%i" % (i+1,myvar,a*b))
+          number = "%i: " % (i+1)
+        else:
+          product = " (%i)" % (a*b)
+        print "%s%i * %i = %s%s" % (number,a,b,var,product)
   print "" if len(keys) == 0 else "Key:"
   for k in keys: print k
 
