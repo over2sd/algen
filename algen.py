@@ -8,7 +8,7 @@ from math import (fabs,fmod)
 
 import showalgex
 
-ver = "0.9.17"
+ver = "0.9.18"
 
 def main(argv):
   debugutest = 0
@@ -21,6 +21,7 @@ def main(argv):
   boring = [-1,0,1]
   gcfone = 0
   tlist = "0123456789ab"
+  nogame = "234679ab"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
   unit = "spans"
@@ -34,8 +35,12 @@ def main(argv):
   rord = 0
   drill = 0
   var = ''
+  game = 0
+  crypt = {}
+  quote = "One cannot become correct while being correct."
+#  quote = "The quick brown fox jumps over the lazy dog."
   try:
-    opts, args = getopt.getopt(argv, "ac:d:fhkmn:o:rt:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy","drill=","rand"])
+    opts, args = getopt.getopt(argv, "ac:d:fg:hkmn:o:q:rt:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy","drill=","rand","game=","quote="])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -61,9 +66,19 @@ def main(argv):
       # need sanity check?
       unit = arg
       u = -1
+    elif opt in ("-q","--quote"):
+      # need sanity check?
+      quote = arg
     elif opt in ("-n","--min"):
       if isnum(arg):
         mn = int(arg)
+      else:
+        print "Argument is not a valid number. Ignoring %s %s.\n" % (opt,arg)
+    elif opt in ("-g","--game"):
+      if isnum(arg):
+        game = int(arg)
+        boring = []
+        keysep = 1
       else:
         print "Argument is not a valid number. Ignoring %s %s.\n" % (opt,arg)
     elif opt in ("-w","--wordy"):
@@ -121,13 +136,23 @@ def main(argv):
     if cnt < 1: cnt = 1
     showalgex.showtabledrill(cnt,mx,drillvar,nodupe,rord,keysep,tlist)
     sys.exit(0)
+  if (game == 1):
+    cnt = 26
+    vlist = "ABCDeFGHIJKLMNoPQRSTUVWXYZ"
   exlist = []
-  while len(exlist) < cnt: # until we have at least as many listed types as we want exercises...
+  spin = 1000
+  while len(exlist) < cnt and spin > 0: # until we have at least as many listed types as we want exercises...
     exlist += tlist # add on exercise types from list of desired types
+    for x in reversed(range(len(exlist)-1)):
+      if exlist[x] in nogame:
+#        print exlist[x],
+        del exlist[x]
+    spin -= 1
   exlist = exlist[:cnt] # trim to desired length
+  part1 = 0
 
   for probtype in exlist:
-    part1 = randint(mn,mx) # x
+    part1 = randint(mn,mx) if (game == 0) else (part1 + randint(1,5)) # x
     part2 = randint(mn,mx) # a
     part3 = randint(mn,mx) # b
     part4 = randint(mn,mx) # c/y
@@ -140,6 +165,8 @@ def main(argv):
     while part5 in boring: part5 = randint(mn,mx) # d
     while part6 in boring or part6 == part2: part6 = randint(mn,mx) # denominator
     var = vlist[randint(0,len(vlist)-1)]
+    if (game == 1):
+      vlist = vlist.replace(var,'')
     i += 1
     o = ""
     denom = part6 if fractions else 1
@@ -177,6 +204,24 @@ def main(argv):
     else: o = "%s %s" % (o,a)
     print "%i) %s" % (i,o)
     if out is not "": lines.append("\n%i) %s" % o)
+    if (game==1):
+      crypt[var] = part1
+  blanks = []
+  codes = []
+  for x in quote:
+    if (x==' '):
+      blanks.append("   ")
+      codes.append("   ")
+      continue
+    blanks.append("__ ")
+    try:
+      codes.append("%i " % (crypt[x.upper()]))
+    except KeyError:
+      try:
+        codes.append("%i " % (crypt[x.lower()]))
+      except KeyError:
+        codes.append(x) # etc...
+  print "%s\n%s" % (''.join(blanks),''.join(codes))
   for l in key:
     print "a%s" % l
   if out is not "":
@@ -229,6 +274,10 @@ def usage():
   print "		2: variable multiplication (ab/x=a)"
   print "		3: variable division (ax=ab)"
   print "		4: mixed drills"
+  print "-q \"<quot>\", --quote \"<quote>\":		Quote to use in games that use quotes."
+  print "-g <id>, --game <id>:		Generate a game:"
+  print "		0: No game (default)"
+  print "		1: 'crostic' type puzzle"
   print "-t <types>, --types <types>:		Type(s) of exercises to generate:"
   print "		0: ax+b=c"
   print "		1: ax+b=cx+d"

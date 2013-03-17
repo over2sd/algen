@@ -9,4 +9,4 @@ Track down area bug
 Move all display commands out of showtabledrill module
 Generate a GUI (GTK) front end for algen
 GUI module should output exercises/keys to various formats (txt, htm, rtf, xml)
-Add a module that produces 26 problems with different answers (one for each letter) and a set of blanks where a quote will go (crostic/codeword/quotagram style)
+Add perfect squares module
