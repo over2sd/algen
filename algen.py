@@ -20,7 +20,7 @@ def main(argv):
   lines = []
   boring = [-1,0,1]
   gcfone = 0
-  tlist = "0123456789ab"
+  tlist = "0123456789abcd"
   nogame = "234679ab"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
@@ -77,7 +77,6 @@ def main(argv):
     elif opt in ("-g","--game"):
       if isnum(arg):
         game = int(arg)
-        boring = []
         keysep = 1
       else:
         print "Argument is not a valid number. Ignoring %s %s.\n" % (opt,arg)
@@ -149,7 +148,7 @@ def main(argv):
         del exlist[x]
     spin -= 1
   exlist = exlist[:cnt] # trim to desired length
-  part1 = 0
+  part1 = 1
 
   for probtype in exlist:
     part1 = randint(mn,mx) if (game == 0) else (part1 + randint(1,5)) # x
@@ -199,6 +198,10 @@ def main(argv):
     elif probtype == '9': (o,a) = showalgex.showfracgcf(part1,part2,gcfone)
     elif probtype == 'a': (o,a) = showalgex.showmd3d(part1,part2,part3,1)
     elif probtype == 'b': (o,a) = showalgex.showunitrate(part1,part2,part3,part4,part5,wordy)
+    elif probtype in ['c','d']:
+      if probtype == 'c': part2 = 0
+      if part1 == 0: part1 = randint(2,abs(mx)+3)
+      (o,a) = showalgex.showsquareex(part1,var,part2)
     if keysep:
       key.append("%i) %s" % (i,a))
     else: o = "%s %s" % (o,a)
@@ -213,14 +216,16 @@ def main(argv):
       blanks.append("   ")
       codes.append("   ")
       continue
-    blanks.append("__ ")
     try:
       codes.append("%i " % (crypt[x.upper()]))
+      blanks.append("__ ")
     except KeyError:
       try:
         codes.append("%i " % (crypt[x.lower()]))
+        blanks.append("__ ")
       except KeyError:
         codes.append(x) # etc...
+        blanks.append(x)
   print "%s\n%s" % (''.join(blanks),''.join(codes))
   for l in key:
     print "a%s" % l
@@ -291,6 +296,8 @@ def usage():
   print "		9: Reducing/GCF of fractions"
   print "		a: nnn*nn or x/nn=nnn"
   print "		b: Unit rate exercises"
+  print "		c: Perfect squares"
+  print "		d: x^2+a=b"
   print "	Examples: \"-t 138af\" \"-t 2\""
 
 if __name__ == "__main__":

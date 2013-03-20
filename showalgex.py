@@ -485,6 +485,12 @@ def showtabledrill(count,depth=10,var='',pare=True,randomize=True,sepkey=False,e
   print "" if len(keys) == 0 else "Key:"
   for k in keys: print k
 
+def showsquareex(v,x,a = 0):
+  b = v*v+a
+  o = "%s^2+%i=%i" % (x,a,b) if (a != 0) else "%s^2=%i" % (x,b)
+  k = "(%c=%i)" % (x,v)
+  return (cleaneq(o),k)
+
 def unittest(a = 0, b = 0, c = 0):
   showtabledrill(a,b,'x')
   '''
