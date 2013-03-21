@@ -9,6 +9,4 @@ Track down area bug
 Move all display commands out of showtabledrill module
 Generate a GUI (GTK) front end for algen
 GUI module should output exercises/keys to various formats (txt, htm, rtf, xml)
-Make an array for x values so x won't be repeated and add a flag for minimum distance between problems with same unknown
-
 Tweak triangle function so it can ask for just x instead of area/perim

@@ -5,10 +5,11 @@ import sys
 import getopt
 from random import randint
 from math import (fabs,fmod)
+import re
 
 import showalgex
 
-ver = "0.9.18"
+ver = "0.9.20"
 
 def main(argv):
   debugutest = 0
@@ -37,10 +38,11 @@ def main(argv):
   var = ''
   game = 0
   crypt = {}
-  quote = "One cannot become correct while being correct."
-#  quote = "The quick brown fox jumps over the lazy dog."
+  quote = "The quick brown fox jumps over the lazy dog."
+  mindiff = 3
+  xvals = []
   try:
-    opts, args = getopt.getopt(argv, "ac:d:fg:hkmn:o:q:rt:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy","drill=","rand","game=","quote="])
+    opts, args = getopt.getopt(argv, "ac:d:fg:hkmn:o:q:rs:t:u:v:w:x:01", ["count=","min=","max=","vars=","outfile=","help","allowzero","types=","unit=","test","allowone","wholealt","keyafter","fractco","mixedvar","wordy","drill=","rand","game=","quote=","spread="])
   except getopt.error as err:
     print "Error: %s\n" % err
     usage()
@@ -108,6 +110,11 @@ def main(argv):
       debugutest = 1
     elif opt in ("-r","--rand"):
       rord = 1
+    elif opt in ("-s","--spread"):
+      if isnum(arg):
+        mindiff = int(arg)
+      else:
+        print "Argument is not a valid number. Ignoring %s %s.\n" % (opt,arg)
     elif opt in ("-d","--drill"):
       drill = 1
       tlist = arg if len(arg) == 1 else 0
@@ -136,8 +143,15 @@ def main(argv):
     showalgex.showtabledrill(cnt,mx,drillvar,nodupe,rord,keysep,tlist)
     sys.exit(0)
   if (game == 1):
-    cnt = 26
-    vlist = "ABCDeFGHIJKLMNoPQRSTUVWXYZ"
+    letters = countLetters(quote)
+    numlet = 26 if (nodupe == 0) else letters['total']
+    del letters['total']
+    cnt = numlet # must have a problem for each letter
+    mindiff = cnt + 1 # must ALL be different
+    mx = mx if (mx > mindiff + mn + 3) else mindiff + 3 if (mn < 2) else mn + mindiff # must therefore have at least mindiff spread
+    vlist = "ABCDeFGHIJKLMNoPQRSTUVWXYZ" if (numlet == 26) else ''.join(letters.keys()).upper()
+    vlist = re.sub('E','e',vlist)
+    vlist = re.sub('O','o',vlist)
   exlist = []
   spin = 1000
   while len(exlist) < cnt and spin > 0: # until we have at least as many listed types as we want exercises...
@@ -151,19 +165,23 @@ def main(argv):
   part1 = 1
 
   for probtype in exlist:
-    part1 = randint(mn,mx) if (game == 0) else (part1 + randint(1,5)) # x
+    part1 = randint(mn,mx) # x
     part2 = randint(mn,mx) # a
     part3 = randint(mn,mx) # b
     part4 = randint(mn,mx) # c/y
     part5 = randint(mn,mx) # d
     part6 = randint(mn,mx) # denominator
-    while part1 in boring: part1 = randint(mn,mx) # x
+    spin = 1000
+    while part1 in boring or part1 in xvals and spin:
+      part1 = randint(mn,mx) # x
+      spin -= 1
+      if spin < 10: mx += 1 # expand possibilities when pressed
     while part2 in boring: part2 = randint(mn,mx) # a
     while part3 in boring: part3 = randint(mn,mx) # b
     while part4 in boring: part4 = randint(mn,mx) # c/y
     while part5 in boring: part5 = randint(mn,mx) # d
     while part6 in boring or part6 == part2: part6 = randint(mn,mx) # denominator
-    var = vlist[randint(0,len(vlist)-1)]
+    var = vlist[randint(0,len(vlist)-1)] if (game != 1) else vlist[0]
     if (game == 1):
       vlist = vlist.replace(var,'')
     i += 1
@@ -185,7 +203,6 @@ def main(argv):
       else:
         part3 = fabs(part3)
       (o,a) = showalgex.showtriangle(unit,part1,part2,part3,integers,0)
-
     elif probtype == '4':
         if u >= 0:
           u = fabs(randint(mn,mx))
@@ -209,6 +226,8 @@ def main(argv):
     if out is not "": lines.append("\n%i) %s" % o)
     if (game==1):
       crypt[var] = part1
+    xvals.append(part1)
+    xvals = xvals[:mindiff]
   blanks = []
   codes = []
   for x in quote:
@@ -217,11 +236,11 @@ def main(argv):
       codes.append("   ")
       continue
     try:
-      codes.append("%i " % (crypt[x.upper()]))
+      codes.append("%2i " % (crypt[x.upper()]))
       blanks.append("__ ")
     except KeyError:
       try:
-        codes.append("%i " % (crypt[x.lower()]))
+        codes.append("%2i " % (crypt[x.lower()]))
         blanks.append("__ ")
       except KeyError:
         codes.append(x) # etc...
@@ -254,6 +273,14 @@ def isnum(x):
   except TypeError:
     return False
 
+def countLetters(string):
+  letters = {}
+  for let in string:
+    if let.isalpha():
+      letters[let.upper()] = letters.get(let.upper(),0) + 1
+  letters["total"] = len(letters)
+  return letters
+
 def usage():
   print "Usage: %s [option value]" % sys.argv[0]
   print "-c <#>, --count <#>:		How many exercises to generate"
@@ -263,7 +290,7 @@ def usage():
   print "	Examples: \"-v x\", \"-v abc\""
   print "-o <file>, --outfile <file>:		A filename where the program will\n\tappend its results for easy copy/paste"
   print "-0, --allowzero:		Allow value of x, a, b, c... to be\n\tboring (0, 1, or -1)"
-  print "-1, --allowone:		Allow GCF of 1 (irreducible fraction); in drill modes, avoid duplicates"
+  print "-1, --allowone:		Allow GCF of 1 (irreducible fraction); in drill modes, avoid duplicates; in game mode, produce just enough problems"
   unit = ["parsecs","furlongs","picas","pt","leagues","rods","knots","mil","nm"]
   unit = unit[randint(0,len(unit)-1)]
   print "-u <string>, --unit <string>:		Text to put after measurements\n\t(e.g., %s)" % unit
@@ -272,7 +299,8 @@ def usage():
   print "-f, --fractco:		Allow fractional coefficients"
   print "-m, --mixedvar:		Convert improper fractional coefficents (ax/b) to mixed numbers (a bx/c) for added challenge"
   print "-w <#>, --wordy <#>:		Make word problems, where possible. (-1:no; 0:random(default); 1:yes)"
-  print "-r --rand:	In drill modes, randomize exercise order"
+  print "-r, --rand:	In drill modes, randomize exercise order"
+  print "-s <#>, --spread <#>:	Minimum spread of identical x values (default 3)"
   print "-d <type>, --drill <type>:	Times Table Drill (with -cxkv1r)"
   print "		0 (default): multiplication (a*b= )"
   print "		1: division (ab/a= )"
