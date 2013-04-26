@@ -246,26 +246,34 @@ def showsimpineq(v,a,x,b,den=1,mixedco=0):
   k = "(%c%s%i)" % (x,i,v)
   return (cleaneq(o),k)
 
-def showfracgcf(a, b,allow1):
+def showfracgcf(a, b,allow1,fracs = {}):
   spin = 0
 #  x = "%i,%i" % (a,b)
 #  print x,
   if a < 0: a *= -1
-  if b < 0: b *= -1
+  if b < 0: b *= -1 # both numbers should be positive in our fractions
   if a == 0:
     a = 6
   else:
     a += 5
+#  print "in: %i %i" % (a,b)
   if b == 0: b = a
-  if a == 1: a = 2
+  if b == a: a += 1
+  if a == 1: a = 3
   if b == 1: b = 2 # 1 produces unreducible fractions
   b,a = sorted([a,b]) # a should be larger than b
-  sub = (a + b) / 2
-  if sub in [a,b]: sub /= 2
-  if sub > a: sub = a - 1
+  m = euclid_gcf(a,b)
+  b /= m
+  a /= m
+  if m == 1: m = randint(1,7)
+  nlist = []
+  '''
+  sub = (a + b) / 2 # find mean
+  if sub in [a,b]: sub /= 2 # if mean is one of our numbers, use half
+  if sub > a: sub = a - 1 # if mean is still larger than largest number, use one less than largest
   ns = 2
   if sub > 2:
-    ns = randint(2,sub)
+    ns = randint(2,sub) # ns is between 2 and adjusted mean?
   nb = a - ns
   db = 0
   ds = 1
@@ -285,13 +293,30 @@ def showfracgcf(a, b,allow1):
   elif n == d and allow1 == 0 and n > 6:
     n -= randint(2,n - 3)
   elif n == d and allow1 == 0: n = randint(1,30); d = n * randint(2,3)
-  b = euclid_gcf(d,n)
-  nb = n / b
-  db = d / b
+  '''
+  nlist.append(b)
+  while (b in nlist):
+    try:
+      nlist = fracs[a] # get list of nums for this denom
+    except KeyError: # denom not yet present
+      nlist = []
+    if (b in nlist and b > 2): # do we need a different numerator, and can we decrease the numerator?
+      b -= 1
+    elif (b in nlist): # otherwise, if we need to revise, increase the denominator
+      a += 1
+  nb = b
+  db = a
+  try:
+    fracs[db].append(nb)
+  except KeyError:
+    fracs[db] = []
+    fracs[db].append(nb)
+  n = nb * m
+  d = db * m
   o = "%i/%i" % (n,d)
-  k = "(%i/%i GCF=%i)" % (nb,db,b)
+  k = "(%i/%i GCF=%i)" % (nb,db,m)
   if nb != nb+0.00 or db != db+0.00: return "error %s" % o
-  return (o,k)
+  return (o,k,fracs)
 
 def euclid_gcf(a,b):
   while b != 0:
