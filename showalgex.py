@@ -246,54 +246,39 @@ def showsimpineq(v,a,x,b,den=1,mixedco=0):
   k = "(%c%s%i)" % (x,i,v)
   return (cleaneq(o),k)
 
-def showfracgcf(a, b,allow1,fracs = {}):
+def showfracgcf(a, b,allow1,fracs = {},var=""):
+  gametxt = ""
+  gtxt = "GCF"
+  m = 1
+  keepgcf = 0
   spin = 0
+  if b == 0:
+    m = a
+    keepgcf = 1
+    if a == 0: return ("0/1","(0/1, GCF=0)",fracs) # Bad error!
+    b = [2,3,4,5,7,9][randint(0,5)]
+    gametxt="%s=GCF of " % (var)
+    gtxt = "%s" % (var)
 #  x = "%i,%i" % (a,b)
 #  print x,
   if a < 0: a *= -1
   if b < 0: b *= -1 # both numbers should be positive in our fractions
+#  print "in: %i %i" % (a,b)
   if a == 0:
     a = 6
   else:
     a += 5
-#  print "in: %i %i" % (a,b)
-  if b == 0: b = a
-  if b == a: a += 1
+  if b == a: a += m
   if a == 1: a = 3
   if b == 1: b = 2 # 1 produces unreducible fractions
   b,a = sorted([a,b]) # a should be larger than b
-  m = euclid_gcf(a,b)
-  b /= m
-  a /= m
-  if m == 1: m = randint(1,7)
+  g = euclid_gcf(a,b)
+  b /= g
+  a /= g
+  if g == 1: g = randint(1,7)
+  if not keepgcf:
+    m = g
   nlist = []
-  '''
-  sub = (a + b) / 2 # find mean
-  if sub in [a,b]: sub /= 2 # if mean is one of our numbers, use half
-  if sub > a: sub = a - 1 # if mean is still larger than largest number, use one less than largest
-  ns = 2
-  if sub > 2:
-    ns = randint(2,sub) # ns is between 2 and adjusted mean?
-  nb = a - ns
-  db = 0
-  ds = 1
-  if nb < 0: nb *= -1
-  if nb == 0: nb = 1
-  while db < nb or db == 0:
-    ds = 1
-    if sub > 2:
-      ds = randint(1,sub - 1)
-    db = a - ds
-    spin += 1
-    if spin > 100: db = nb + 1
-  n = nb * b
-  d = db * b
-  if n == d and n in [4,9,16,25,36,49,64,81,100,121,144,169,196,225]: n = sqrt(d)
-  elif n == d and n%2 == 0: d = n + 2
-  elif n == d and allow1 == 0 and n > 6:
-    n -= randint(2,n - 3)
-  elif n == d and allow1 == 0: n = randint(1,30); d = n * randint(2,3)
-  '''
   nlist.append(b)
   while (b in nlist):
     try:
@@ -304,8 +289,8 @@ def showfracgcf(a, b,allow1,fracs = {}):
       b -= 1
     elif (b in nlist): # otherwise, if we need to revise, increase the denominator
       a += 1
-  nb = b
-  db = a
+  nb = b # TODO: if not b = 0
+  db = a # ibid
   try:
     fracs[db].append(nb)
   except KeyError:
@@ -313,8 +298,8 @@ def showfracgcf(a, b,allow1,fracs = {}):
     fracs[db].append(nb)
   n = nb * m
   d = db * m
-  o = "%i/%i" % (n,d)
-  k = "(%i/%i GCF=%i)" % (nb,db,m)
+  o = "%s%i/%i" % (gametxt,n,d)
+  k = "(%i/%i %s=%i)" % (nb,db,gtxt,m)
   if nb != nb+0.00 or db != db+0.00: return "error %s" % o
   return (o,k,fracs)
 

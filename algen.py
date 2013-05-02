@@ -9,7 +9,7 @@ import re
 
 import showalgex
 
-ver = "0.9.23"
+ver = "0.9.24"
 
 def main(argv):
   debugutest = 0
@@ -23,7 +23,7 @@ def main(argv):
   boring = [-1,0,1]
   gcfone = 0
   tlist = "0123456789abcd"
-  nogame = "234679ab"
+  nogame = "23467ab"
   units = ["mm","cm","in","ft","m","yds","km","mi","AU","px"]
   u = 0
   unit = "spans"
@@ -151,13 +151,16 @@ def main(argv):
     del letters['total']
     cnt = numlet # must have a problem for each letter
     mindiff = cnt + 1 # must ALL be different
+    boring.append(0) #must not use 0
     mx = mx if (mx > mindiff + mn + 3) else mindiff + 3 if (mn < 2) else mn + mindiff # must therefore have at least mindiff spread
     vlist = "ABCDeFGHIJKLMNoPQRSTUVWXYZ" if (numlet == 26) else ''.join(sorted(letters.keys())).upper()
     vlist = re.sub('E','e',vlist)
     vlist = re.sub('O','o',vlist)
   exlist = []
   spin = 1000
-  if (not game): nogame = ""
+  if (not game):
+    nogame = ""
+    quote = ""
   while len(exlist) < cnt and spin > 0: # until we have at least as many listed types as we want exercises...
     exlist += tlist # add on exercise types from list of desired types
     for x in reversed(range(len(exlist)-1)):
@@ -216,7 +219,9 @@ def main(argv):
     elif probtype == '5': (o,a) = showalgex.showabxmc(part1,part2,part3,var,part4)
     elif probtype == '6': (o,a) = showalgex.showx3my3(part1,var,part2)
     elif probtype == '8': (o,a) = showalgex.showsimpineq(part1,part2,var,part3,denom,mixedco)
-    elif probtype == '9': (o,a,fraclist) = showalgex.showfracgcf(part1,part2,gcfone,fraclist)
+    elif probtype == '9':
+      if game == 1: part2 = 0 # Caring about GCF, not reduced fraction
+      (o,a,fraclist) = showalgex.showfracgcf(part1,part2,gcfone,fraclist,var)
     elif probtype == 'a': (o,a) = showalgex.showmd3d(part1,part2,part3,1)
     elif probtype == 'b': (o,a) = showalgex.showunitrate(part1,part2,part3,part4,part5,wordy)
     elif probtype in ['c','d']:

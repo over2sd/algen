@@ -7,8 +7,9 @@ Generate graphing exercises
 Better bounding for fraction generators
 Track down area bug
 Move all display commands out of showtabledrill module
+Move all display commands out of all showalgex modules
 Generate a GUI (GTK) front end for algen
 GUI module should output exercises/keys to various formats (txt, htm, rtf, xml)
 Tweak triangle function so it can ask for just x instead of area/perim
 x^2 problems generate abs(x) for answer key
-Make the quote printout check for game flag
+GCF/Fraction reduction module needs a flag (b) that makes it output based on GCF instead of reduced fraction
