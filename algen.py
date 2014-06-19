@@ -9,7 +9,7 @@ import re
 
 import showalgex
 
-ver = "0.9.24"
+ver = "0.9.25"
 
 def main(argv):
   debugutest = 0
