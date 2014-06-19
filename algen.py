@@ -228,11 +228,12 @@ def main(argv):
       if probtype == 'c': part2 = 0
       if part1 == 0: part1 = randint(2,abs(mx)+3)
       (o,a) = showalgex.showsquareex(part1,var,part2)
+    itxt = "%i)" % i
     if keysep:
-      key.append("%i) %s" % (i,a))
+      key.append("%s %s" % (itxt,a))
     else: o = "%s %s" % (o,a)
-    print "%i) %s" % (i,o)
-    if out is not "": lines.append("\n%i) %s" % o)
+    print "%s %s" % (itxt,o)
+    if out is not "": lines.append("\n%s %s" % (itxt,o))
     if (game==1):
       crypt[var] = part1
     xvals.append(part1)
